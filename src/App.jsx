@@ -1,4 +1,10 @@
 import { useState, useEffect, useRef } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  "https://galtdialnwommzmxopgh.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdhbHRkaWFsbndvbW16bXhvcGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMDYzODIsImV4cCI6MjA4OTY4MjM4Mn0.9kukUE8DXjE7NYro5zUNUgb9Z3xuGkfJGT1F7K4VVXg"
+);
 
 const G = "#16c45e";
 const DARK = "#0b0f1a";
@@ -484,11 +490,23 @@ function WaitlistModal({ open, onClose }) {
     setErrors(er => ({ ...er, [k]: undefined }));
   };
 
-  const submit = () => {
+  const submit = async () => {
     const e = validate();
     if (Object.keys(e).length) { setErrors(e); return; }
     setLoading(true);
-    setTimeout(() => { setLoading(false); setSubmitted(true); }, 1600);
+    const { error } = await supabase.from("waitlist").insert([{
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      city: form.city,
+      country: form.country,
+    }]);
+    setLoading(false);
+    if (error) {
+      setErrors({ email: "Something went wrong. Please try again." });
+    } else {
+      setSubmitted(true);
+    }
   };
 
   if (!open) return null;
