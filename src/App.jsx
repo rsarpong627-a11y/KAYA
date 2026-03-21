@@ -564,7 +564,7 @@ function WaitlistModal({ open, onClose }) {
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               <div>
                 <label style={{ fontSize: ".78rem", fontWeight: 600, letterSpacing: ".06em", color: "rgba(255,255,255,.5)", textTransform: "uppercase", display: "block", marginBottom: 7 }}>Full Name</label>
-                <input value={form.name} onChange={handle("name")} placeholder="Jane Smith" style={inputStyle("name")}
+                <input value={form.name} onChange={handle("name")} placeholder="Richmond Sarpong" style={inputStyle("name")}
                   onFocus={() => setFocus("name")} onBlur={() => setFocus("")}/>
                 {errors.name && <p style={{ color: "#f87171", fontSize: ".78rem", marginTop: 4 }}>{errors.name}</p>}
               </div>
@@ -572,14 +572,20 @@ function WaitlistModal({ open, onClose }) {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                 <div>
                   <label style={{ fontSize: ".78rem", fontWeight: 600, letterSpacing: ".06em", color: "rgba(255,255,255,.5)", textTransform: "uppercase", display: "block", marginBottom: 7 }}>City</label>
-                  <input value={form.city} onChange={handle("city")} placeholder="Toronto" style={inputStyle("city")}
+                  <input value={form.city} onChange={handle("city")} placeholder="Accra" style={inputStyle("city")}
                     onFocus={() => setFocus("city")} onBlur={() => setFocus("")}/>
                   {errors.city && <p style={{ color: "#f87171", fontSize: ".78rem", marginTop: 4 }}>{errors.city}</p>}
                 </div>
                 <div>
                   <label style={{ fontSize: ".78rem", fontWeight: 600, letterSpacing: ".06em", color: "rgba(255,255,255,.5)", textTransform: "uppercase", display: "block", marginBottom: 7 }}>Country</label>
-                  <input value={form.country} onChange={handle("country")} placeholder="Canada" style={inputStyle("country")}
-                    onFocus={() => setFocus("country")} onBlur={() => setFocus("")}/>
+                  <select value={form.country} onChange={handle("country")}
+                    onFocus={() => setFocus("country")} onBlur={() => setFocus("")}
+                    style={{ ...inputStyle("country"), appearance: "none", WebkitAppearance: "none" }}>
+                    <option value="" disabled>Select country</option>
+                    {["Algeria","Angola","Benin","Botswana","Burkina Faso","Burundi","Cabo Verde","Cameroon","Central African Republic","Chad","Comoros","Congo (Brazzaville)","Congo (DRC)","Djibouti","Egypt","Equatorial Guinea","Eritrea","Eswatini","Ethiopia","Gabon","Gambia","Ghana","Guinea","Guinea-Bissau","Ivory Coast","Kenya","Lesotho","Liberia","Libya","Madagascar","Malawi","Mali","Mauritania","Mauritius","Morocco","Mozambique","Namibia","Niger","Nigeria","Rwanda","São Tomé & Príncipe","Senegal","Seychelles","Sierra Leone","Somalia","South Africa","South Sudan","Sudan","Tanzania","Togo","Tunisia","Uganda","Zambia","Zimbabwe"].map(c => (
+                      <option key={c} value={c} style={{ background: "#0f1626", color: "#fff" }}>{c}</option>
+                    ))}
+                  </select>
                   {errors.country && <p style={{ color: "#f87171", fontSize: ".78rem", marginTop: 4 }}>{errors.country}</p>}
                 </div>
               </div>
@@ -593,7 +599,7 @@ function WaitlistModal({ open, onClose }) {
 
               <div>
                 <label style={{ fontSize: ".78rem", fontWeight: 600, letterSpacing: ".06em", color: "rgba(255,255,255,.5)", textTransform: "uppercase", display: "block", marginBottom: 7 }}>Email Address</label>
-                <input value={form.email} onChange={handle("email")} placeholder="jane@example.com" type="email" style={inputStyle("email")}
+                <input value={form.email} onChange={handle("email")} placeholder="sarpong@example.com" type="email" style={inputStyle("email")}
                   onFocus={() => setFocus("email")} onBlur={() => setFocus("")}/>
                 {errors.email && <p style={{ color: "#f87171", fontSize: ".78rem", marginTop: 4 }}>{errors.email}</p>}
               </div>
@@ -613,7 +619,7 @@ function WaitlistModal({ open, onClose }) {
                     <div style={{ width: 18, height: 18, border: "2.5px solid rgba(0,0,0,.3)", borderTopColor: "#0b0f1a", borderRadius: "50%", animation: "spin .8s linear infinite" }}/>
                     Securing your spot…
                   </>
-                ) : "🚀 Get Early Access"}
+                ) : "Get Early Access"}
               </button>
 
               <p style={{ textAlign: "center", fontSize: ".78rem", color: "rgba(255,255,255,.3)" }}>
