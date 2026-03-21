@@ -463,6 +463,25 @@ function Stats() {
   );
 }
 
+const DIAL_CODES = {
+  "Algeria": "+213", "Angola": "+244", "Benin": "+229", "Botswana": "+267",
+  "Burkina Faso": "+226", "Burundi": "+257", "Cabo Verde": "+238",
+  "Cameroon": "+237", "Central African Republic": "+236", "Chad": "+235",
+  "Comoros": "+269", "Congo (Brazzaville)": "+242", "Congo (DRC)": "+243",
+  "Djibouti": "+253", "Egypt": "+20", "Equatorial Guinea": "+240",
+  "Eritrea": "+291", "Eswatini": "+268", "Ethiopia": "+251", "Gabon": "+241",
+  "Gambia": "+220", "Ghana": "+233", "Guinea": "+224", "Guinea-Bissau": "+245",
+  "Ivory Coast": "+225", "Kenya": "+254", "Lesotho": "+266", "Liberia": "+231",
+  "Libya": "+218", "Madagascar": "+261", "Malawi": "+265", "Mali": "+223",
+  "Mauritania": "+222", "Mauritius": "+230", "Morocco": "+212",
+  "Mozambique": "+258", "Namibia": "+264", "Niger": "+227", "Nigeria": "+234",
+  "Rwanda": "+250", "São Tomé & Príncipe": "+239", "Senegal": "+221",
+  "Seychelles": "+248", "Sierra Leone": "+232", "Somalia": "+252",
+  "South Africa": "+27", "South Sudan": "+211", "Sudan": "+249",
+  "Tanzania": "+255", "Togo": "+228", "Tunisia": "+216", "Uganda": "+256",
+  "Zambia": "+260", "Zimbabwe": "+263",
+};
+
 function WaitlistModal({ open, onClose }) {
   const [form, setForm] = useState({ name: "", city: "", country: "", phone: "", email: "" });
   const [submitted, setSubmitted] = useState(false);
@@ -592,8 +611,21 @@ function WaitlistModal({ open, onClose }) {
 
               <div>
                 <label style={{ fontSize: ".78rem", fontWeight: 600, letterSpacing: ".06em", color: "rgba(255,255,255,.5)", textTransform: "uppercase", display: "block", marginBottom: 7 }}>Phone Number</label>
-                <input value={form.phone} onChange={handle("phone")} placeholder="+1 416 555 0100" type="tel" style={inputStyle("phone")}
-                  onFocus={() => setFocus("phone")} onBlur={() => setFocus("")}/>
+                <div style={{ display: "flex", gap: 8 }}>
+                  {form.country && DIAL_CODES[form.country] && (
+                    <div style={{
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      padding: "0 14px", borderRadius: 14, fontWeight: 700, fontSize: ".95rem",
+                      background: "rgba(22,196,94,.12)", border: `1.5px solid ${G}`,
+                      color: G, whiteSpace: "nowrap", flexShrink: 0,
+                    }}>
+                      {DIAL_CODES[form.country]}
+                    </div>
+                  )}
+                  <input value={form.phone} onChange={handle("phone")} placeholder="" type="tel"
+                    style={{ ...inputStyle("phone"), flex: 1 }}
+                    onFocus={() => setFocus("phone")} onBlur={() => setFocus("")}/>
+                </div>
                 {errors.phone && <p style={{ color: "#f87171", fontSize: ".78rem", marginTop: 4 }}>{errors.phone}</p>}
               </div>
 
