@@ -520,12 +520,18 @@ function WaitlistModal({ open, onClose }) {
       city: form.city,
       country: form.country,
     }]);
-    setLoading(false);
     if (error) {
+      setLoading(false);
       setErrors({ email: "Something went wrong. Please try again." });
-    } else {
-      setSubmitted(true);
+      return;
     }
+    await fetch("/api/send-confirmation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: form.name, email: form.email, city: form.city, country: form.country }),
+    });
+    setLoading(false);
+    setSubmitted(true);
   };
 
   if (!open) return null;
