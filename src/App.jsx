@@ -394,7 +394,7 @@ function Steps() {
 function PartnerCards({ onWaitlist }) {
   const cards = [
     { title: "Deliver with Kaya", desc: "Set your own hours. Earn on your terms. Deliver food, groceries and more in your city — sign up takes minutes.", cta: "Become a Driver", img: "https://i.ibb.co/sJyvFVsL/P2.png" },
-    { title: "Grow with Kaya", desc: "Reach new customers, drive more orders and scale your business. Zero commission for the first 30 days.", cta: "Partner with Us", img: "https://i.ibb.co/Cs699zbX/seller.jpg" },
+    { title: "Grow with Kaya", desc: "Reach new customers, drive more orders and scale your business. Zero commission for the first 30 days.", cta: "Partner with Us", img: "https://i.ibb.co/prKTjV1H/Gemini-Generated-Image-mgbgpzmgbgpzmgbg.png" },
   ];
   return (
     <section style={{ padding: "100px 24px", background: DARK }}>
