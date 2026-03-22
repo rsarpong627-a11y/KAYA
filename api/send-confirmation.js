@@ -12,7 +12,7 @@ export default async function handler(req, res) {
         "api-key": process.env.BREVO_API_KEY,
       },
       body: JSON.stringify({
-        sender: { name: "Kaya", email: "rsarpong627@gmail.com" },
+        sender: { name: "Kaya", email: "noreply@kayafast.com" },
         to: [{ email }],
         subject: "You're on the Kaya waitlist!",
         htmlContent: `
