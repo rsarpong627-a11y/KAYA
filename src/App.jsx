@@ -48,6 +48,9 @@ const styles = `
     from { transform: translateX(0); }
     to   { transform: translateX(-50%); }
   }
+  @media (max-width: 640px) {
+    .kaya-feature-row { gap: 32px !important; }
+  }
 `;
 
 function useReveal() {
@@ -61,6 +64,16 @@ function useReveal() {
     return () => obs.disconnect();
   }, []);
   return [ref, vis];
+}
+
+function useWindowWidth() {
+  const [width, setWidth] = useState(() => typeof window !== "undefined" ? window.innerWidth : 1200);
+  useEffect(() => {
+    const h = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", h);
+    return () => window.removeEventListener("resize", h);
+  }, []);
+  return width;
 }
 
 function RevealBox({ children, delay = 0, style = {}, className = "" }) {
@@ -124,6 +137,8 @@ function GhostBtn({ children, onClick }) {
 
 function Navbar({ onWaitlist }) {
   const [scrolled, setScrolled] = useState(false);
+  const w = useWindowWidth();
+  const isMobile = w < 640;
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 24);
     window.addEventListener("scroll", h);
@@ -133,28 +148,32 @@ function Navbar({ onWaitlist }) {
   return (
     <nav style={{
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 9999,
-      display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "14px 28px",
+      display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
+      padding: isMobile ? "12px 16px" : "14px 28px",
       background: scrolled ? "rgba(11,15,26,0.94)" : "rgba(11,15,26,0.5)",
       backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
       borderBottom: scrolled ? "1px solid rgba(255,255,255,.06)" : "1px solid transparent",
       transition: "background .35s, border-color .35s, box-shadow .35s",
       boxShadow: scrolled ? "0 4px 32px rgba(0,0,0,.35)" : "none",
     }}>
-      <div style={{ flex: "0 0 auto", width: 120 }} />
+      {!isMobile && <div style={{ flex: "0 0 auto", width: 120 }} />}
 
-      <div style={{ fontFamily: "'Syne', sans-serif", fontSize: "1.55rem", fontWeight: 800, letterSpacing: "-1px" }}>
+      <div style={{ fontFamily: "'Syne', sans-serif", fontSize: isMobile ? "1.3rem" : "1.55rem", fontWeight: 800, letterSpacing: "-1px" }}>
         Kay<span style={{ color: G }}>a</span>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 12, flex: "0 0 auto", width: 120, justifyContent: "flex-end" }}>
-        <button style={{ background: "none", border: "none", color: "rgba(255,255,255,.8)", fontWeight: 600, fontSize: ".88rem", cursor: "pointer", fontFamily: "'Instrument Sans', sans-serif" }}>
-          Login
-        </button>
+      <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 8 : 12, flex: "0 0 auto", width: isMobile ? "auto" : 120, justifyContent: "flex-end" }}>
+        {!isMobile && (
+          <button style={{ background: "none", border: "none", color: "rgba(255,255,255,.8)", fontWeight: 600, fontSize: ".88rem", cursor: "pointer", fontFamily: "'Instrument Sans', sans-serif" }}>
+            Login
+          </button>
+        )}
         <button onClick={onWaitlist} style={{
           background: G, color: "#fff", border: "none", borderRadius: 999,
-          padding: "10px 22px", fontWeight: 700, fontSize: ".88rem",
+          padding: isMobile ? "8px 14px" : "10px 22px",
+          fontWeight: 700, fontSize: isMobile ? ".8rem" : ".88rem",
           fontFamily: "'Instrument Sans', sans-serif", cursor: "pointer",
-          transition: "background .2s",
+          transition: "background .2s", whiteSpace: "nowrap",
         }}
           onMouseEnter={e => e.target.style.background = "#13b354"}
           onMouseLeave={e => e.target.style.background = G}
@@ -474,6 +493,8 @@ function WaitlistModal({ open, onClose }) {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [focus, setFocus] = useState("");
+  const w = useWindowWidth();
+  const isMobile = w < 640;
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -532,11 +553,11 @@ function WaitlistModal({ open, onClose }) {
   });
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 99999, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, background: "rgba(0,0,0,.75)", backdropFilter: "blur(12px)" }}
+    <div style={{ position: "fixed", inset: 0, zIndex: 99999, display: "flex", alignItems: "center", justifyContent: "center", padding: isMobile ? "8px" : 16, background: "rgba(0,0,0,.75)", backdropFilter: "blur(12px)" }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <div style={{
         background: "#0f1626", border: "1px solid rgba(255,255,255,.1)",
-        borderRadius: 28, padding: "48px 40px", maxWidth: 520, width: "100%",
+        borderRadius: 28, padding: isMobile ? "28px 18px" : "48px 40px", maxWidth: 520, width: "100%",
         boxShadow: "0 40px 100px rgba(0,0,0,.7)",
         animation: "fadeUp .45s ease",
         position: "relative",
@@ -580,7 +601,7 @@ function WaitlistModal({ open, onClose }) {
                 {errors.name && <p style={{ color: "#f87171", fontSize: ".78rem", marginTop: 4 }}>{errors.name}</p>}
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12 }}>
                 <div>
                   <label style={{ fontSize: ".78rem", fontWeight: 600, letterSpacing: ".06em", color: "rgba(255,255,255,.5)", textTransform: "uppercase", display: "block", marginBottom: 7 }}>City</label>
                   <input value={form.city} onChange={handle("city")} placeholder="Accra" style={inputStyle("city")}
@@ -679,6 +700,9 @@ function WaitlistSection({ onWaitlist }) {
 }
 
 function Footer({ onWaitlist }) {
+  const w = useWindowWidth();
+  const isMobile = w < 640;
+  const isTablet = w < 900;
   const cols = [
     { title: "Company", links: ["About Kaya", "Newsroom", "Careers", "Investors", "Accessibility"] },
     { title: "Services", links: ["Food Delivery", "Groceries", "Pharmacy", "Retail", "Rides (soon)"] },
@@ -687,8 +711,8 @@ function Footer({ onWaitlist }) {
   return (
     <footer style={{ background: "#080c15", color: "rgba(255,255,255,.5)", padding: "72px 24px 40px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr 1fr 1fr", gap: 48, marginBottom: 56, flexWrap: "wrap" }}>
-          <div>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : isTablet ? "1fr 1fr 1fr" : "1.6fr 1fr 1fr 1fr", gap: 48, marginBottom: 56, flexWrap: "wrap" }}>
+          <div style={{ gridColumn: isMobile ? "1 / -1" : "auto" }}>
             <div style={{ fontFamily: "'Syne', sans-serif", fontSize: "1.5rem", fontWeight: 800, color: "#fff", letterSpacing: "-1px", marginBottom: 14 }}>
               Kay<span style={{ color: G }}>a</span>
             </div>
