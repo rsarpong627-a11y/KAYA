@@ -133,34 +133,20 @@ function Navbar({ onWaitlist }) {
   return (
     <nav style={{
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 9999,
-      display: "flex", alignItems: "center", gap: 16, padding: "14px 28px",
+      display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "14px 28px",
       background: scrolled ? "rgba(11,15,26,0.94)" : "rgba(11,15,26,0.5)",
       backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
       borderBottom: scrolled ? "1px solid rgba(255,255,255,.06)" : "1px solid transparent",
       transition: "background .35s, border-color .35s, box-shadow .35s",
       boxShadow: scrolled ? "0 4px 32px rgba(0,0,0,.35)" : "none",
     }}>
-      <div style={{ fontFamily: "'Syne', sans-serif", fontSize: "1.55rem", fontWeight: 800, letterSpacing: "-1px", flex: "0 0 auto" }}>
+      <div style={{ flex: "0 0 auto", width: 120 }} />
+
+      <div style={{ fontFamily: "'Syne', sans-serif", fontSize: "1.55rem", fontWeight: 800, letterSpacing: "-1px" }}>
         Kay<span style={{ color: G }}>a</span>
       </div>
 
-      <div style={{
-        flex: 1, maxWidth: 400, margin: "0 auto",
-        display: "flex", alignItems: "center", gap: 8,
-        background: "rgba(255,255,255,.07)", border: "1px solid rgba(255,255,255,.09)",
-        borderRadius: 999, padding: "9px 18px",
-      }}>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" strokeWidth="2.2">
-          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-        </svg>
-        <input readOnly placeholder="Enter delivery address..." style={{
-          background: "transparent", border: "none", outline: "none",
-          color: "rgba(255,255,255,.9)", fontSize: ".88rem",
-          fontFamily: "'Instrument Sans', sans-serif", width: "100%", cursor: "default",
-        }}/>
-      </div>
-
-      <div style={{ display: "flex", alignItems: "center", gap: 12, flex: "0 0 auto" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, flex: "0 0 auto", width: 120, justifyContent: "flex-end" }}>
         <button style={{ background: "none", border: "none", color: "rgba(255,255,255,.8)", fontWeight: 600, fontSize: ".88rem", cursor: "pointer", fontFamily: "'Instrument Sans', sans-serif" }}>
           Login
         </button>
