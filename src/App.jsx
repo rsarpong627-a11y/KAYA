@@ -62,31 +62,25 @@ function useReveal(threshold = 0.1) {
 
 // ── Navbar ──────────────────────────────────────────────────────────────────
 function Navbar({ onWaitlist }) {
-  const [hidden, setHidden] = useState(false);
-  const lastY = useRef(0);
+  const [scrolled, setScrolled] = useState(false);
   const w = useWindowWidth();
   const isMobile = w < 768;
 
   useEffect(() => {
-    const h = () => {
-      const y = window.scrollY;
-      setHidden(y > lastY.current && y > 80);
-      lastY.current = y;
-    };
+    const h = () => setScrolled(window.scrollY > 24);
     window.addEventListener("scroll", h, { passive: true });
     return () => window.removeEventListener("scroll", h);
   }, []);
 
   return (
     <nav style={{
-      position: "sticky", top: 0, zIndex: 999,
+      position: "fixed", top: 0, left: 0, right: 0, zIndex: 999,
       display: "flex", alignItems: "center", justifyContent: "space-between",
       padding: isMobile ? "16px 20px" : "20px 48px",
-      background: "rgba(240,235,226,0.97)",
-      backdropFilter: "blur(10px)",
-      borderBottom: `1px solid rgba(13,61,46,0.08)`,
-      transform: hidden ? "translateY(-100%)" : "translateY(0)",
-      transition: "transform 0.3s ease",
+      background: scrolled ? "rgba(240,235,226,0.97)" : "transparent",
+      backdropFilter: scrolled ? "blur(10px)" : "none",
+      borderBottom: scrolled ? `1px solid rgba(13,61,46,0.08)` : "1px solid transparent",
+      transition: "all 0.3s ease",
     }}>
       <img src="https://i.ibb.co/9mmjhR0Y/Untitled-4.png" alt="Kaya" style={{ height: 85, width: "auto", objectFit: "contain" }} />
 
@@ -126,7 +120,7 @@ function Hero({ onWaitlist }) {
     <section style={{
       minHeight: "100svh",
       display: "flex", alignItems: "center",
-      padding: isMobile ? "60px 20px 70px" : "80px 48px 80px",
+      padding: isMobile ? "120px 20px 70px" : "140px 48px 80px",
       background: BG, position: "relative", overflow: "hidden",
     }}>
       <div style={{
