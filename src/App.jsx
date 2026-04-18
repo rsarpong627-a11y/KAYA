@@ -17,6 +17,7 @@ const styles = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body, #root { width: 100%; min-height: 100vh; }
   html { scroll-behavior: smooth; }
   body { font-family: 'DM Sans', sans-serif; background: ${BG}; color: ${TEXT}; overflow-x: hidden; }
 
@@ -81,9 +82,7 @@ function Navbar({ onWaitlist }) {
       borderBottom: scrolled ? `1px solid rgba(13,61,46,0.1)` : "1px solid transparent",
       transition: "all 0.3s ease",
     }}>
-      <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: "1.4rem", color: DARK, letterSpacing: "-0.5px" }}>
-        Kay<span style={{ color: G }}>a</span>
-      </div>
+      <img src="https://i.ibb.co/9mmjhR0Y/Untitled-4.png" alt="Kaya" style={{ height: 36, width: "auto", objectFit: "contain" }} />
 
       {!isMobile && (
         <div style={{ display: "flex", gap: 36 }}>
@@ -140,18 +139,6 @@ function Hero({ onWaitlist }) {
       }}>
         {/* Left */}
         <div style={{ animation: "fadeUp 0.8s 0.1s both" }}>
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            background: "rgba(13,61,46,0.07)",
-            border: `1px solid rgba(13,61,46,0.14)`,
-            padding: "6px 14px", borderRadius: 999, marginBottom: 32,
-          }}>
-            <div style={{ width: 7, height: 7, background: G, borderRadius: "50%" }} />
-            <span style={{ fontSize: ".75rem", fontWeight: 600, color: DARK, letterSpacing: ".1em", textTransform: "uppercase" }}>
-              Launching in Accra
-            </span>
-          </div>
-
           <h1 style={{
             fontFamily: "'DM Serif Display', serif",
             fontSize: "clamp(3rem, 5.5vw, 5rem)",
@@ -508,9 +495,7 @@ function Footer({ onWaitlist }) {
           gap: isMobile ? 40 : 48, marginBottom: 56,
         }}>
           <div style={{ gridColumn: isMobile ? "1 / -1" : "auto" }}>
-            <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: "1.5rem", color: "#fff", marginBottom: 14 }}>
-              Kay<span style={{ color: G }}>a</span>
-            </div>
+            <img src="https://i.ibb.co/9mmjhR0Y/Untitled-4.png" alt="Kaya" style={{ height: 32, width: "auto", objectFit: "contain", filter: "brightness(0) invert(1)", marginBottom: 14 }} />
             <p style={{ fontSize: ".9rem", color: "rgba(255,255,255,0.35)", lineHeight: 1.7, maxWidth: 200, marginBottom: 28 }}>
               Everything you need, delivered.
             </p>
