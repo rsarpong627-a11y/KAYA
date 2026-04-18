@@ -82,7 +82,7 @@ function Navbar({ onWaitlist }) {
       borderBottom: scrolled ? `1px solid rgba(13,61,46,0.1)` : "1px solid transparent",
       transition: "all 0.3s ease",
     }}>
-      <img src="https://i.ibb.co/9mmjhR0Y/Untitled-4.png" alt="Kaya" style={{ height: 36, width: "auto", objectFit: "contain" }} />
+      <img src="https://i.ibb.co/9mmjhR0Y/Untitled-4.png" alt="Kaya" style={{ height: 50, width: "auto", objectFit: "contain" }} />
 
       {!isMobile && (
         <div style={{ display: "flex", gap: 36 }}>
@@ -495,7 +495,7 @@ function Footer({ onWaitlist }) {
           gap: isMobile ? 40 : 48, marginBottom: 56,
         }}>
           <div style={{ gridColumn: isMobile ? "1 / -1" : "auto" }}>
-            <img src="https://i.ibb.co/9mmjhR0Y/Untitled-4.png" alt="Kaya" style={{ height: 32, width: "auto", objectFit: "contain", filter: "brightness(0) invert(1)", marginBottom: 14 }} />
+            <img src="https://i.ibb.co/9mmjhR0Y/Untitled-4.png" alt="Kaya" style={{ height: 45, width: "auto", objectFit: "contain", filter: "brightness(0) invert(1)", marginBottom: 14 }} />
             <p style={{ fontSize: ".9rem", color: "rgba(255,255,255,0.35)", lineHeight: 1.7, maxWidth: 200, marginBottom: 28 }}>
               Everything you need, delivered.
             </p>
