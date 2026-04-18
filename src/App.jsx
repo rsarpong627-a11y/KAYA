@@ -74,15 +74,14 @@ function Navbar({ onWaitlist }) {
 
   return (
     <nav style={{
-      position: "fixed", top: 0, left: 0, right: 0, zIndex: 999,
+      position: "sticky", top: 0, zIndex: 999,
       display: "flex", alignItems: "center", justifyContent: "space-between",
       padding: isMobile ? "16px 20px" : "20px 48px",
-      background: scrolled ? "rgba(240,235,226,0.96)" : "transparent",
-      backdropFilter: scrolled ? "blur(10px)" : "none",
-      borderBottom: scrolled ? `1px solid rgba(13,61,46,0.1)` : "1px solid transparent",
-      transition: "all 0.3s ease",
+      background: "rgba(240,235,226,0.97)",
+      backdropFilter: "blur(10px)",
+      borderBottom: `1px solid rgba(13,61,46,0.08)`,
     }}>
-      <img src="https://i.ibb.co/9mmjhR0Y/Untitled-4.png" alt="Kaya" style={{ height: 150, width: "auto", objectFit: "contain" }} />
+      <img src="https://i.ibb.co/9mmjhR0Y/Untitled-4.png" alt="Kaya" style={{ height: 85, width: "auto", objectFit: "contain" }} />
 
       {!isMobile && (
         <div style={{ display: "flex", gap: 36 }}>
@@ -120,7 +119,7 @@ function Hero({ onWaitlist }) {
     <section style={{
       minHeight: "100svh",
       display: "flex", alignItems: "center",
-      padding: isMobile ? "100px 20px 70px" : "120px 48px 80px",
+      padding: isMobile ? "60px 20px 70px" : "80px 48px 80px",
       background: BG, position: "relative", overflow: "hidden",
     }}>
       <div style={{
@@ -495,7 +494,7 @@ function Footer({ onWaitlist }) {
           gap: isMobile ? 40 : 48, marginBottom: 56,
         }}>
           <div style={{ gridColumn: isMobile ? "1 / -1" : "auto" }}>
-            <img src="https://i.ibb.co/9mmjhR0Y/Untitled-4.png" alt="Kaya" style={{ height: 135, width: "auto", objectFit: "contain", filter: "brightness(0) invert(1)", marginBottom: 14 }} />
+            <img src="https://i.ibb.co/9mmjhR0Y/Untitled-4.png" alt="Kaya" style={{ height: 75, width: "auto", objectFit: "contain", filter: "brightness(0) invert(1)", marginBottom: 14 }} />
             <p style={{ fontSize: ".9rem", color: "rgba(255,255,255,0.35)", lineHeight: 1.7, maxWidth: 200, marginBottom: 28 }}>
               Everything you need, delivered.
             </p>
