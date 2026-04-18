@@ -756,6 +756,32 @@ function Footer({ onWaitlist }) {
   );
 }
 
+function CookieNotice() {
+  const [visible, setVisible] = useState(() => !localStorage.getItem("kaya_cookie_ok"));
+  if (!visible) return null;
+  return (
+    <div style={{
+      position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 99998,
+      background: "#0f1626", borderTop: "1px solid rgba(255,255,255,.1)",
+      padding: "14px 24px", display: "flex", alignItems: "center",
+      justifyContent: "center", gap: 20, flexWrap: "wrap",
+    }}>
+      <p style={{ fontSize: ".85rem", color: "rgba(255,255,255,.6)", margin: 0, maxWidth: 680 }}>
+        We use cookies to keep the site working and analyse usage. By continuing, you agree to our{" "}
+        <a href="/privacy-policy.html" style={{ color: G, textDecoration: "underline" }}>Privacy Policy</a>.
+      </p>
+      <button onClick={() => { localStorage.setItem("kaya_cookie_ok", "1"); setVisible(false); }}
+        style={{
+          background: G, color: "#0b0f1a", border: "none", borderRadius: 999,
+          padding: "9px 22px", fontWeight: 700, fontSize: ".85rem",
+          fontFamily: "'Instrument Sans', sans-serif", cursor: "pointer", whiteSpace: "nowrap",
+        }}>
+        Got it
+      </button>
+    </div>
+  );
+}
+
 export default function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const openWaitlist = () => setModalOpen(true);
@@ -836,6 +862,7 @@ export default function App() {
       <Footer onWaitlist={openWaitlist}/>
 
       <WaitlistModal open={modalOpen} onClose={() => setModalOpen(false)}/>
+      <CookieNotice/>
     </>
   );
 }
