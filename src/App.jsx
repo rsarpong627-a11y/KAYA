@@ -740,11 +740,14 @@ function Footer({ onWaitlist }) {
         <div style={{ borderTop: "1px solid rgba(255,255,255,.07)", paddingTop: 32, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
           <p style={{ fontSize: ".82rem" }}>© 2026 Kaya Technologies Inc. All rights reserved.</p>
           <div style={{ display: "flex", gap: 24 }}>
-            {["Terms", "Privacy", "Cookies", "Do Not Sell My Info"].map((l, i) => (
-              <a key={i} href="#" style={{ fontSize: ".82rem", color: "rgba(255,255,255,.35)", textDecoration: "none", transition: "color .2s" }}
+            {[
+              { label: "Terms", href: "/terms-of-service.html" },
+              { label: "Privacy", href: "/privacy-policy.html" },
+            ].map((l, i) => (
+              <a key={i} href={l.href} style={{ fontSize: ".82rem", color: "rgba(255,255,255,.35)", textDecoration: "none", transition: "color .2s" }}
                 onMouseEnter={e => e.target.style.color = "#fff"}
                 onMouseLeave={e => e.target.style.color = "rgba(255,255,255,.35)"}
-              >{l}</a>
+              >{l.label}</a>
             ))}
           </div>
         </div>
