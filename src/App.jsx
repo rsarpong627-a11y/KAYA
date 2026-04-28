@@ -592,7 +592,9 @@ function WaitlistModal({ open, onClose }) {
     setLoading(true);
     const { error } = await supabase.from("waitlist").insert([{ name: form.name, email: form.email, phone: form.phone, city: form.city, country: form.country }]);
     if (error) { setLoading(false); setErrors({ email: "Something went wrong. Please try again." }); return; }
-    await fetch("/api/send-confirmation", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: form.name, email: form.email, city: form.city, country: form.country }) });
+    await supabase.functions.invoke("send-waitlist-email", {
+      body: { name: form.name, email: form.email, city: form.city, country: form.country },
+    });
     setLoading(false);
     setSubmitted(true);
   };
