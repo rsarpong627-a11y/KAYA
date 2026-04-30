@@ -779,6 +779,108 @@ const DIAL_CODES = {
   "Algeria":"+213","Angola":"+244","Benin":"+229","Botswana":"+267","Burkina Faso":"+226","Burundi":"+257","Cabo Verde":"+238","Cameroon":"+237","Central African Republic":"+236","Chad":"+235","Comoros":"+269","Congo (Brazzaville)":"+242","Congo (DRC)":"+243","Djibouti":"+253","Egypt":"+20","Equatorial Guinea":"+240","Eritrea":"+291","Eswatini":"+268","Ethiopia":"+251","Gabon":"+241","Gambia":"+220","Ghana":"+233","Guinea":"+224","Guinea-Bissau":"+245","Ivory Coast":"+225","Kenya":"+254","Lesotho":"+266","Liberia":"+231","Libya":"+218","Madagascar":"+261","Malawi":"+265","Mali":"+223","Mauritania":"+222","Mauritius":"+230","Morocco":"+212","Mozambique":"+258","Namibia":"+264","Niger":"+227","Nigeria":"+234","Rwanda":"+250","São Tomé & Príncipe":"+239","Senegal":"+221","Seychelles":"+248","Sierra Leone":"+232","Somalia":"+252","South Africa":"+27","South Sudan":"+211","Sudan":"+249","Tanzania":"+255","Togo":"+228","Tunisia":"+216","Uganda":"+256","Zambia":"+260","Zimbabwe":"+263",
 };
 
+// ── Roles Section (DoorDash-style rows) ───────────────────────────────────────
+function RolesSection({ onWaitlist }) {
+  const [ref, vis] = useReveal();
+  const w = useWindowWidth();
+  const isMobile = w < 768;
+
+  const roles = [
+    {
+      emoji: "🛍️",
+      title: "Order anything,\ndelivered fast",
+      desc: "Browse local restaurants, grocery stores, pharmacies and retail shops. Get everything delivered to your door in under 30 minutes.",
+      cta: "Join the waitlist →",
+      // Replace emoji div below with: <img src="your-svg.svg" ... />
+    },
+    {
+      emoji: "🏪",
+      title: "Grow your\nbusiness",
+      desc: "Reach thousands of new customers across your city. List your store on Kaya and start receiving orders — zero commission for your first 30 days.",
+      cta: "Partner with Kaya →",
+    },
+    {
+      emoji: "🛵",
+      title: "Earn on\nyour terms",
+      desc: "Set your own hours, choose your delivery zone and earn competitive pay per delivery. Sign up in minutes and start making money with Kaya.",
+      cta: "Become a rider →",
+    },
+  ];
+
+  return (
+    <section style={{ background: WHITE, padding: isMobile ? "56px 20px" : "100px 48px" }}>
+      <div style={{ maxWidth: 780, margin: "0 auto" }}>
+        <div ref={ref} style={{
+          opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(24px)",
+          transition: "opacity 0.7s, transform 0.7s",
+        }}>
+          {roles.map((r, i) => (
+            <div key={i} style={{
+              display: "flex", alignItems: "flex-start", gap: isMobile ? 20 : 36,
+              paddingBottom: i < roles.length - 1 ? (isMobile ? 40 : 56) : 0,
+              marginBottom: i < roles.length - 1 ? (isMobile ? 40 : 56) : 0,
+              borderBottom: i < roles.length - 1 ? `1px solid ${BORDER}` : "none",
+              opacity: vis ? 1 : 0,
+              transform: vis ? "none" : "translateY(20px)",
+              transition: `opacity 0.6s ${i * 0.15}s, transform 0.6s ${i * 0.15}s`,
+            }}>
+              {/* Illustration — swap this div for your SVG art */}
+              <div style={{
+                width: isMobile ? 88 : 120,
+                height: isMobile ? 88 : 120,
+                borderRadius: "50%",
+                background: SOFT,
+                border: `2px solid ${BORDER}`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: isMobile ? "2rem" : "2.8rem",
+                flexShrink: 0,
+              }}>
+                {r.emoji}
+              </div>
+
+              {/* Content */}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <h3 style={{
+                  fontSize: isMobile ? "1.5rem" : "2rem",
+                  fontWeight: 900,
+                  color: DARK,
+                  lineHeight: 1.15,
+                  letterSpacing: "-0.5px",
+                  marginBottom: 10,
+                  whiteSpace: "pre-line",
+                }}>
+                  {r.title}
+                </h3>
+                <p style={{
+                  fontSize: isMobile ? ".88rem" : ".98rem",
+                  color: MUTED,
+                  lineHeight: 1.75,
+                  marginBottom: 14,
+                }}>
+                  {r.desc}
+                </p>
+                <button onClick={onWaitlist} style={{
+                  background: "none", border: "none", padding: 0,
+                  color: GREEN, fontWeight: 700,
+                  fontSize: isMobile ? ".88rem" : ".95rem",
+                  fontFamily: "Inter, sans-serif", cursor: "pointer",
+                  display: "flex", alignItems: "center", gap: 4,
+                  transition: "opacity .2s",
+                }}
+                  onMouseEnter={e => e.currentTarget.style.opacity = 0.7}
+                  onMouseLeave={e => e.currentTarget.style.opacity = 1}
+                >
+                  {r.cta}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function WaitlistModal({ open, onClose }) {
   const [form, setForm] = useState({ name: "", city: "", country: "", phone: "", email: "" });
   const [submitted, setSubmitted] = useState(false);
@@ -986,6 +1088,7 @@ export default function App() {
       <WhyKaya />
       <Partners onWaitlist={openWaitlist} />
       <WaitlistCTA onWaitlist={openWaitlist} />
+      <RolesSection onWaitlist={openWaitlist} />
       <Footer onWaitlist={openWaitlist} />
       <WaitlistModal open={modalOpen} onClose={() => setModalOpen(false)} />
       <CookieNotice />
