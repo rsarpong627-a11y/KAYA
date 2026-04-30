@@ -97,7 +97,7 @@ function Navbar({ onWaitlist }) {
       borderBottom: `1px solid ${scrolled ? BORDER : "transparent"}`,
       transition: "all 0.25s ease",
     }}>
-      <img src="https://i.ibb.co/9mmjhR0Y/Untitled-4.png" alt="Kaya" style={{ height: 52, width: "auto", objectFit: "contain" }} />
+      <img src="/kaya-logo.png" alt="Kaya" style={{ height: 52, width: "auto", objectFit: "contain" }} />
 
       {!isMobile && (
         <div style={{ display: "flex", gap: 32 }}>
@@ -723,7 +723,7 @@ function Footer({ onWaitlist }) {
           gap: isMobile ? 40 : 48, marginBottom: 56,
         }}>
           <div style={{ gridColumn: isMobile ? "1 / -1" : "auto" }}>
-            <img src="https://i.ibb.co/9mmjhR0Y/Untitled-4.png" alt="Kaya" style={{ height: 48, width: "auto", objectFit: "contain", filter: "brightness(0) invert(1)", marginBottom: 14 }} />
+            <img src="/kaya-logo.png" alt="Kaya" style={{ height: 48, width: "auto", objectFit: "contain", filter: "brightness(0) invert(1)", marginBottom: 14 }} />
             <p style={{ fontSize: ".88rem", color: "rgba(255,255,255,0.3)", lineHeight: 1.75, maxWidth: 220, marginBottom: 24 }}>
               Everything you need, delivered fast. Kumasi &amp; Accra.
             </p>
