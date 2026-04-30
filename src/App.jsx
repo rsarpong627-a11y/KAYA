@@ -21,9 +21,9 @@ const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body, #root { width: 100%; min-height: 100vh; }
-  html { scroll-behavior: smooth; }
-  body { font-family: 'Inter', sans-serif; background: ${WHITE}; color: ${TEXT}; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  html, body, #root { width: 100%; min-height: 100vh; max-width: 100%; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
+  body { font-family: 'Inter', sans-serif; background: ${WHITE}; color: ${TEXT}; overflow-x: hidden; -webkit-font-smoothing: antialiased; max-width: 100vw; }
 
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: ${WHITE}; }
@@ -148,6 +148,7 @@ function Hero({ onWaitlist }) {
       display: "flex", alignItems: "center",
       padding: isMobile ? "90px 20px 48px" : "0 48px",
       position: "relative", overflow: "hidden",
+      width: "100%", maxWidth: "100vw",
     }}>
       {/* Background accent — hidden on mobile to prevent overflow */}
       {!isMobile && <>
@@ -165,38 +166,40 @@ function Hero({ onWaitlist }) {
         }} />
       </>}
 
-      <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%", maxWidth: "100%", position: "relative", zIndex: 1 }}>
         <div style={{
           display: "grid",
           gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-          gap: isMobile ? 48 : 64,
+          gap: isMobile ? 32 : 64,
           alignItems: "center",
+          width: "100%",
         }}>
           {/* Left */}
-          <div style={{ animation: "fadeUp 0.7s 0.1s both" }}>
+          <div style={{ animation: "fadeUp 0.7s 0.1s both", width: "100%", minWidth: 0 }}>
             {/* Badge */}
             <div style={{
               display: "inline-flex", alignItems: "center", gap: 8,
               background: SOFT, border: `1px solid ${BORDER}`,
-              borderRadius: 999, padding: "6px 14px", marginBottom: 28,
+              borderRadius: 999, padding: "6px 14px", marginBottom: 20,
+              maxWidth: "100%",
             }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: GREEN, display: "inline-block" }} />
-              <span style={{ fontSize: ".8rem", fontWeight: 600, color: DARK }}>Now launching in Ghana</span>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: GREEN, display: "inline-block", flexShrink: 0 }} />
+              <span style={{ fontSize: ".78rem", fontWeight: 600, color: DARK, whiteSpace: "nowrap" }}>Now launching in Ghana</span>
             </div>
 
             <h1 style={{
-              fontSize: isMobile ? "2.6rem" : "clamp(3rem, 5vw, 4.4rem)",
-              fontWeight: 900, lineHeight: 1.06,
-              letterSpacing: "-2px", color: DARK,
-              marginBottom: 22,
+              fontSize: isMobile ? "clamp(1.9rem, 8vw, 2.4rem)" : "clamp(3rem, 5vw, 4.4rem)",
+              fontWeight: 900, lineHeight: 1.1,
+              letterSpacing: isMobile ? "-1px" : "-2px", color: DARK,
+              marginBottom: 16, wordBreak: "break-word",
             }}>
               Order anything,<br />
               <span style={{ color: GREEN }}>delivered fast.</span>
             </h1>
 
             <p style={{
-              fontSize: isMobile ? "1rem" : "1.1rem",
-              color: MUTED, lineHeight: 1.75, maxWidth: 440, marginBottom: 36,
+              fontSize: isMobile ? ".95rem" : "1.1rem",
+              color: MUTED, lineHeight: 1.7, maxWidth: isMobile ? "100%" : 440, marginBottom: 28,
             }}>
               Food, groceries, pharmacy and retail — one app for your entire day. Launching in Kumasi & Accra. Join the waitlist today.
             </p>
@@ -274,14 +277,14 @@ function Hero({ onWaitlist }) {
 
             {/* Mobile-only: food image strip */}
             {isMobile && (
-              <div style={{ display: "flex", gap: 10, marginTop: 28, overflow: "hidden", borderRadius: 16 }}>
+              <div style={{ display: "flex", gap: 8, marginTop: 24, width: "100%", overflow: "hidden" }}>
                 {[
                   "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&q=80",
                   "https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&q=80",
                   "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&q=80",
                 ].map((src, i) => (
-                  <div key={i} style={{ flex: 1, height: 100, borderRadius: 14, overflow: "hidden", flexShrink: 0 }}>
-                    <img src={src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <div key={i} style={{ flex: 1, height: 90, borderRadius: 12, overflow: "hidden" }}>
+                    <img src={src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   </div>
                 ))}
               </div>
