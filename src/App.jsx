@@ -33,13 +33,19 @@ const styles = `
   @keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
   @keyframes spin     { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
   @keyframes float    { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
-  @keyframes marquee  { from { transform:translateX(0); } to { transform:translateX(-50%); } }
 
-  .cat-pill:hover { background: ${GREEN} !important; color: #fff !important; transform: translateY(-2px); }
+  .cat-scroll { display:flex; gap:10px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:4px; scrollbar-width:none; }
+  .cat-scroll::-webkit-scrollbar { display:none; }
+  .cat-pill:hover { background: ${GREEN} !important; color: #fff !important; }
   .nav-link:hover { color: ${GREEN} !important; }
   .step-card:hover { border-color: ${GREEN} !important; transform: translateY(-4px); }
   .partner-card:hover .partner-btn { background: ${GREEN} !important; color: #fff !important; }
-  .feature-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(22,196,94,0.15) !important; }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(22,196,94,0.15) !important; }
+
+  @media (max-width: 767px) {
+    .step-card:hover { transform: none; }
+    .feature-card:hover { transform: none; }
+  }
 `;
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -140,22 +146,24 @@ function Hero({ onWaitlist }) {
       minHeight: "100svh",
       background: WHITE,
       display: "flex", alignItems: "center",
-      padding: isMobile ? "100px 20px 60px" : "0 48px",
+      padding: isMobile ? "90px 20px 48px" : "0 48px",
       position: "relative", overflow: "hidden",
     }}>
-      {/* Background accent */}
-      <div style={{
-        position: "absolute", top: "-10%", right: "-5%",
-        width: "50vw", height: "80vh",
-        background: CREAM, borderRadius: "40% 60% 60% 40% / 40% 40% 60% 60%",
-        zIndex: 0, pointerEvents: "none",
-      }} />
-      <div style={{
-        position: "absolute", bottom: "5%", left: "-8%",
-        width: "30vw", height: "30vw",
-        background: SOFT, borderRadius: "50%",
-        zIndex: 0, pointerEvents: "none",
-      }} />
+      {/* Background accent — hidden on mobile to prevent overflow */}
+      {!isMobile && <>
+        <div style={{
+          position: "absolute", top: "-10%", right: "-5%",
+          width: "50vw", height: "80vh",
+          background: CREAM, borderRadius: "40% 60% 60% 40% / 40% 40% 60% 60%",
+          zIndex: 0, pointerEvents: "none",
+        }} />
+        <div style={{
+          position: "absolute", bottom: "5%", left: "-8%",
+          width: "30vw", height: "30vw",
+          background: SOFT, borderRadius: "50%",
+          zIndex: 0, pointerEvents: "none",
+        }} />
+      </>}
 
       <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 }}>
         <div style={{
@@ -193,51 +201,91 @@ function Hero({ onWaitlist }) {
               Food, groceries, pharmacy and retail — one app for your entire day. Launching in Kumasi & Accra. Join the waitlist today.
             </p>
 
-            {/* Inline CTA — Uber Eats style */}
-            <div style={{
-              display: "flex", gap: 0,
-              background: WHITE, border: `2px solid ${DARK}`,
-              borderRadius: 999, overflow: "hidden",
-              maxWidth: 440, marginBottom: 32,
-              boxShadow: "0 8px 32px rgba(28,46,28,0.12)",
-            }}>
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && handleCTA()}
-                style={{
-                  flex: 1, border: "none", outline: "none",
-                  padding: "14px 20px", fontSize: ".95rem",
-                  fontFamily: "Inter, sans-serif", background: "transparent",
-                  color: DARK,
-                }}
-              />
-              <button onClick={handleCTA} style={{
-                background: DARK, color: WHITE, border: "none",
-                padding: "14px 24px", fontWeight: 700, fontSize: ".9rem",
-                fontFamily: "Inter, sans-serif", cursor: "pointer",
-                whiteSpace: "nowrap",
+            {/* Inline CTA — stacks vertically on mobile */}
+            {isMobile ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28, width: "100%" }}>
+                <input
+                  type="email"
+                  placeholder="Enter your email address"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleCTA()}
+                  style={{
+                    width: "100%", border: `2px solid ${DARK}`, outline: "none",
+                    padding: "14px 18px", fontSize: "1rem", borderRadius: 14,
+                    fontFamily: "Inter, sans-serif", color: DARK, background: WHITE,
+                  }}
+                />
+                <button onClick={handleCTA} style={{
+                  background: DARK, color: WHITE, border: "none", borderRadius: 14,
+                  padding: "15px", fontWeight: 700, fontSize: "1rem",
+                  fontFamily: "Inter, sans-serif", cursor: "pointer", width: "100%",
+                }}>
+                  Get Early Access →
+                </button>
+              </div>
+            ) : (
+              <div style={{
+                display: "flex", gap: 0,
+                background: WHITE, border: `2px solid ${DARK}`,
+                borderRadius: 999, overflow: "hidden",
+                maxWidth: 440, marginBottom: 32,
+                boxShadow: "0 8px 32px rgba(28,46,28,0.12)",
               }}>
-                Get Early Access
-              </button>
-            </div>
+                <input
+                  type="email"
+                  placeholder="Enter your email address"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleCTA()}
+                  style={{
+                    flex: 1, border: "none", outline: "none",
+                    padding: "14px 20px", fontSize: ".95rem",
+                    fontFamily: "Inter, sans-serif", background: "transparent",
+                    color: DARK,
+                  }}
+                />
+                <button onClick={handleCTA} style={{
+                  background: DARK, color: WHITE, border: "none",
+                  padding: "14px 24px", fontWeight: 700, fontSize: ".9rem",
+                  fontFamily: "Inter, sans-serif", cursor: "pointer",
+                  whiteSpace: "nowrap",
+                }}>
+                  Get Early Access
+                </button>
+              </div>
+            )}
 
-            {/* Category pills */}
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            {/* Category pills — horizontal scroll on mobile */}
+            <div className="cat-scroll" style={{ flexWrap: isMobile ? "nowrap" : "wrap" }}>
               {categories.map(c => (
                 <button key={c.label} className="cat-pill" onClick={onWaitlist} style={{
-                  display: "flex", alignItems: "center", gap: 7,
+                  display: "flex", alignItems: "center", gap: 7, flexShrink: 0,
                   background: SOFT, color: DARK, border: `1.5px solid ${BORDER}`,
                   borderRadius: 999, padding: "8px 16px",
                   fontSize: ".85rem", fontWeight: 600, cursor: "pointer",
                   transition: "all .2s", fontFamily: "Inter, sans-serif",
+                  whiteSpace: "nowrap",
                 }}>
                   <span>{c.icon}</span> {c.label}
                 </button>
               ))}
             </div>
+
+            {/* Mobile-only: food image strip */}
+            {isMobile && (
+              <div style={{ display: "flex", gap: 10, marginTop: 28, overflow: "hidden", borderRadius: 16 }}>
+                {[
+                  "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&q=80",
+                  "https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&q=80",
+                  "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&q=80",
+                ].map((src, i) => (
+                  <div key={i} style={{ flex: 1, height: 100, borderRadius: 14, overflow: "hidden", flexShrink: 0 }}>
+                    <img src={src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Right: floating food cards grid */}
@@ -353,10 +401,12 @@ function StatsBar() {
           <div key={i} style={{
             textAlign: "center",
             borderRight: !isMobile && i < stats.length - 1 ? `1px solid rgba(255,255,255,0.1)` : "none",
-            padding: "0 32px",
+            borderBottom: isMobile && i < 2 ? `1px solid rgba(255,255,255,0.08)` : "none",
+            padding: isMobile ? "0 12px 24px" : "0 32px",
+            marginBottom: isMobile && i < 2 ? 24 : 0,
           }}>
-            <div style={{ fontSize: isMobile ? "2rem" : "2.4rem", fontWeight: 900, color: GREEN, lineHeight: 1, marginBottom: 8 }}>{s.value}</div>
-            <div style={{ fontSize: ".85rem", color: "rgba(255,255,255,0.5)", fontWeight: 500 }}>{s.label}</div>
+            <div style={{ fontSize: isMobile ? "1.8rem" : "2.4rem", fontWeight: 900, color: GREEN, lineHeight: 1, marginBottom: 6 }}>{s.value}</div>
+            <div style={{ fontSize: isMobile ? ".78rem" : ".85rem", color: "rgba(255,255,255,0.5)", fontWeight: 500 }}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -455,20 +505,26 @@ function HowItWorks() {
           </h2>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4,1fr)", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(4,1fr)", gap: 12 }}>
           {STEPS.map((s, i) => (
             <div key={i} className="step-card" style={{
-              background: WHITE, borderRadius: 20, padding: "28px 24px",
+              background: WHITE, borderRadius: 20,
+              padding: isMobile ? "20px" : "28px 24px",
               border: `1.5px solid ${BORDER}`,
               transition: "all .25s ease",
               opacity: vis ? 1 : 0,
               transform: vis ? "none" : "translateY(24px)",
               transitionDelay: `${i * 0.1}s`,
+              display: isMobile ? "flex" : "block",
+              gap: isMobile ? 16 : 0,
+              alignItems: isMobile ? "flex-start" : "unset",
             }}>
-              <div style={{ fontSize: "1.8rem", marginBottom: 16 }}>{s.icon}</div>
-              <div style={{ fontSize: ".7rem", fontWeight: 700, letterSpacing: ".1em", color: GREEN, textTransform: "uppercase", marginBottom: 10 }}>{s.n}</div>
-              <h3 style={{ fontSize: "1rem", fontWeight: 800, color: DARK, marginBottom: 10, lineHeight: 1.3 }}>{s.title}</h3>
-              <p style={{ fontSize: ".88rem", color: MUTED, lineHeight: 1.75 }}>{s.desc}</p>
+              <div style={{ fontSize: isMobile ? "1.6rem" : "1.8rem", marginBottom: isMobile ? 0 : 16, flexShrink: 0 }}>{s.icon}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: ".7rem", fontWeight: 700, letterSpacing: ".1em", color: GREEN, textTransform: "uppercase", marginBottom: 6 }}>{s.n}</div>
+                <h3 style={{ fontSize: "1rem", fontWeight: 800, color: DARK, marginBottom: 6, lineHeight: 1.3 }}>{s.title}</h3>
+                <p style={{ fontSize: ".88rem", color: MUTED, lineHeight: 1.7 }}>{s.desc}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -570,7 +626,7 @@ function Partners({ onWaitlist }) {
           {cards.map((c, i) => (
             <div key={i} className="partner-card" style={{
               borderRadius: 24, overflow: "hidden",
-              minHeight: 420, position: "relative",
+              minHeight: isMobile ? 340 : 420, position: "relative",
               display: "flex", flexDirection: "column", justifyContent: "flex-end",
               opacity: vis ? 1 : 0,
               transform: vis ? "none" : "translateY(24px)",
@@ -774,15 +830,19 @@ function WaitlistModal({ open, onClose }) {
   });
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 99999, display: "flex", alignItems: "center", justifyContent: "center", padding: isMobile ? "8px" : 16, background: "rgba(28,46,28,0.6)", backdropFilter: "blur(16px)" }}
+    <div style={{ position: "fixed", inset: 0, zIndex: 99999, display: "flex", alignItems: isMobile ? "flex-end" : "center", justifyContent: "center", padding: isMobile ? 0 : 16, background: "rgba(28,46,28,0.6)", backdropFilter: "blur(16px)" }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <div style={{
-        background: WHITE, borderRadius: 28,
-        padding: isMobile ? "28px 20px" : "48px 44px",
-        maxWidth: 500, width: "100%",
+        background: WHITE,
+        borderRadius: isMobile ? "24px 24px 0 0" : 28,
+        padding: isMobile ? "28px 20px 32px" : "48px 44px",
+        maxWidth: isMobile ? "100%" : 500,
+        width: "100%",
         boxShadow: "0 40px 120px rgba(0,0,0,0.2)",
-        position: "relative", maxHeight: "92svh", overflowY: "auto",
-        animation: "fadeUp .4s ease",
+        position: "relative",
+        maxHeight: isMobile ? "92svh" : "90svh",
+        overflowY: "auto",
+        animation: isMobile ? "fadeUp .35s ease" : "fadeUp .4s ease",
       }}>
         <button onClick={onClose} style={{
           position: "absolute", top: 18, right: 18,
