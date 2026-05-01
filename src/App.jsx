@@ -7,49 +7,42 @@ const supabase = createClient(
 );
 
 // ── Design tokens ──────────────────────────────────────────────────────────────
-const WHITE  = "#FFFFFF";
-const CREAM  = "#F7FFF0";
-const GREEN  = "#16C45E";
-const DARK   = "#1C2E1C";
-const MUTED  = "#5A7A5A";
-const SOFT   = "#E8F5ED";
-const BORDER = "#D0E8B0";
-const TEXT   = "#111A12";
+const CREAM = "#F0EBE0";
+const DARK  = "#1B3A2A";
+const TERRA = "#C85A38";
+const GOLD  = "#E8B83C";
+const TEXT  = "#1A1A1A";
+const WHITE = "#FFFFFF";
+const MUTED = "#7A7A6A";
+const SOFT  = "rgba(27,58,42,0.06)";
 
 // ── Global styles ──────────────────────────────────────────────────────────────
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body, #root { width: 100%; min-height: 100vh; max-width: 100%; }
   html { scroll-behavior: smooth; overflow-x: hidden; }
-  body { font-family: 'Inter', sans-serif; background: ${WHITE}; color: ${TEXT}; overflow-x: hidden; -webkit-font-smoothing: antialiased; max-width: 100vw; }
+  body { font-family: 'Inter', sans-serif; background: ${CREAM}; color: ${TEXT}; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 
   ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: ${WHITE}; }
-  ::-webkit-scrollbar-thumb { background: ${GREEN}44; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb { background: ${DARK}44; border-radius: 4px; }
 
-  @keyframes fadeUp   { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
-  @keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
-  @keyframes spin     { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-  @keyframes float    { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes spin   { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
 
-  .cat-scroll { display:flex; gap:10px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:4px; scrollbar-width:none; }
-  .cat-scroll::-webkit-scrollbar { display:none; }
-  .cat-pill:hover { background: ${GREEN} !important; color: #fff !important; }
-  .nav-link:hover { color: ${GREEN} !important; }
-  .step-card:hover { border-color: ${GREEN} !important; transform: translateY(-4px); }
-  .partner-card:hover .partner-btn { background: ${GREEN} !important; color: #fff !important; }
-  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(22,196,94,0.15) !important; }
-
-  @media (max-width: 767px) {
-    .step-card:hover { transform: none; }
-    .feature-card:hover { transform: none; }
-  }
+  .nav-a:hover { opacity: 0.5 !important; }
+  .pill-role { transition: all .2s; cursor: pointer; }
+  .pill-role:hover { background: ${DARK} !important; color: ${WHITE} !important; border-color: ${DARK} !important; }
+  .cat-card { transition: transform .3s; cursor: pointer; overflow: hidden; }
+  .cat-card:hover { transform: scale(1.015); }
+  .cat-card img { transition: transform .5s; }
+  .cat-card:hover img { transform: scale(1.06); }
 `;
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
-function useWindowWidth() {
+function useW() {
   const [w, setW] = useState(() => typeof window !== "undefined" ? window.innerWidth : 1200);
   useEffect(() => {
     const h = () => setW(window.innerWidth);
@@ -59,7 +52,7 @@ function useWindowWidth() {
   return w;
 }
 
-function useReveal(threshold = 0.12) {
+function useReveal(threshold = 0.1) {
   const ref = useRef(null);
   const [vis, setVis] = useState(false);
   useEffect(() => {
@@ -77,11 +70,11 @@ function useReveal(threshold = 0.12) {
 // ── Navbar ─────────────────────────────────────────────────────────────────────
 function Navbar({ onWaitlist }) {
   const [scrolled, setScrolled] = useState(false);
-  const w = useWindowWidth();
-  const isMobile = w < 768;
+  const w = useW();
+  const mob = w < 768;
 
   useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 20);
+    const h = () => setScrolled(window.scrollY > 16);
     window.addEventListener("scroll", h, { passive: true });
     return () => window.removeEventListener("scroll", h);
   }, []);
@@ -90,36 +83,36 @@ function Navbar({ onWaitlist }) {
     <nav style={{
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 999,
       display: "flex", alignItems: "center", justifyContent: "space-between",
-      padding: isMobile ? "14px 20px" : "0 48px",
-      height: isMobile ? "auto" : 72,
-      background: scrolled ? "rgba(255,255,255,0.96)" : WHITE,
+      padding: mob ? "14px 20px" : "0 48px",
+      height: mob ? "auto" : 68,
+      background: scrolled ? "rgba(240,235,224,0.96)" : CREAM,
       backdropFilter: scrolled ? "blur(16px)" : "none",
-      borderBottom: `1px solid ${scrolled ? BORDER : "transparent"}`,
-      transition: "all 0.25s ease",
+      borderBottom: `1px solid ${scrolled ? "rgba(27,58,42,0.1)" : "transparent"}`,
+      transition: "all .25s",
     }}>
-      <img src="/kaya-logo.png" alt="Kaya" style={{ height: 52, width: "auto", objectFit: "contain" }} />
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <img src="/kaya-logo.png" alt="Kaya" style={{ height: mob ? 32 : 36, width: "auto", objectFit: "contain" }} />
+      </div>
 
-      {!isMobile && (
-        <div style={{ display: "flex", gap: 32 }}>
-          {["How it works", "For Riders", "For Vendors"].map(l => (
-            <a key={l} href="#" className="nav-link" style={{
-              fontSize: ".9rem", color: MUTED, fontWeight: 500,
-              textDecoration: "none", transition: "color .2s",
+      {!mob && (
+        <div style={{ display: "flex", gap: 36 }}>
+          {["What we deliver", "How it works", "Why Kaya", "Partners"].map(l => (
+            <a key={l} href="#" className="nav-a" style={{
+              fontSize: ".88rem", color: TEXT, fontWeight: 500,
+              textDecoration: "none", transition: "opacity .2s",
             }}>{l}</a>
           ))}
         </div>
       )}
 
       <button onClick={onWaitlist} style={{
-        background: GREEN, color: WHITE, border: "none", borderRadius: 999,
-        padding: isMobile ? "9px 18px" : "11px 24px",
-        fontWeight: 700, fontSize: ".88rem", fontFamily: "Inter, sans-serif",
-        cursor: "pointer", transition: "opacity .2s",
-      }}
-        onMouseEnter={e => e.target.style.opacity = 0.85}
-        onMouseLeave={e => e.target.style.opacity = 1}
-      >
-        Join Waitlist
+        background: DARK, color: WHITE, border: "none", borderRadius: 999,
+        padding: mob ? "9px 18px" : "11px 26px",
+        fontWeight: 700, fontSize: ".85rem",
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        cursor: "pointer", display: "flex", alignItems: "center", gap: 8,
+      }}>
+        Get early access {!mob && "↗"}
       </button>
     </nav>
   );
@@ -127,407 +120,325 @@ function Navbar({ onWaitlist }) {
 
 // ── Hero ───────────────────────────────────────────────────────────────────────
 function Hero({ onWaitlist }) {
-  const w = useWindowWidth();
-  const isMobile = w < 768;
-  const [email, setEmail] = useState("");
+  const w = useW();
+  const mob = w < 768;
+  const [role, setRole] = useState("order");
 
-  const handleCTA = () => onWaitlist();
-
-  const categories = [
-    { icon: "🍔", label: "Food" },
-    { icon: "🛒", label: "Grocery" },
-    { icon: "💊", label: "Pharmacy" },
-    { icon: "🛍️", label: "Retail" },
-    { icon: "🥤", label: "Drinks" },
+  const roles = [
+    { id: "order", label: "I want to order" },
+    { id: "ride",  label: "Ride with Kaya" },
+    { id: "sell",  label: "Sell on Kaya" },
   ];
 
   return (
     <section style={{
-      minHeight: "100svh",
-      background: WHITE,
+      minHeight: "100svh", background: CREAM,
       display: "flex", alignItems: "center",
-      padding: isMobile ? "90px 20px 48px" : "0 48px",
+      padding: mob ? "100px 20px 60px" : "0 48px",
       position: "relative", overflow: "hidden",
-      width: "100%", maxWidth: "100vw",
     }}>
-      {/* Background accent — hidden on mobile to prevent overflow */}
-      {!isMobile && <>
-        <div style={{
-          position: "absolute", top: "-10%", right: "-5%",
-          width: "50vw", height: "80vh",
-          background: CREAM, borderRadius: "40% 60% 60% 40% / 40% 40% 60% 60%",
-          zIndex: 0, pointerEvents: "none",
-        }} />
-        <div style={{
-          position: "absolute", bottom: "5%", left: "-8%",
-          width: "30vw", height: "30vw",
-          background: SOFT, borderRadius: "50%",
-          zIndex: 0, pointerEvents: "none",
-        }} />
-      </>}
-
-      <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%", maxWidth: "100%", position: "relative", zIndex: 1 }}>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-          gap: isMobile ? 32 : 64,
-          alignItems: "center",
-          width: "100%",
-        }}>
-          {/* Left */}
-          <div style={{ animation: "fadeUp 0.7s 0.1s both", width: "100%", minWidth: 0 }}>
-            {/* Badge */}
-            <div style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              background: SOFT, border: `1px solid ${BORDER}`,
-              borderRadius: 999, padding: "6px 14px", marginBottom: 20,
-              maxWidth: "100%",
-            }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: GREEN, display: "inline-block", flexShrink: 0 }} />
-              <span style={{ fontSize: ".78rem", fontWeight: 600, color: DARK, whiteSpace: "nowrap" }}>Now launching in Ghana</span>
-            </div>
-
-            <h1 style={{
-              fontSize: isMobile ? "clamp(1.9rem, 8vw, 2.4rem)" : "clamp(3rem, 5vw, 4.4rem)",
-              fontWeight: 900, lineHeight: 1.1,
-              letterSpacing: isMobile ? "-1px" : "-2px", color: DARK,
-              marginBottom: 16, wordBreak: "break-word",
-            }}>
-              Order anything,<br />
-              <span style={{ color: GREEN }}>delivered fast.</span>
-            </h1>
-
-            <p style={{
-              fontSize: isMobile ? ".95rem" : "1.1rem",
-              color: MUTED, lineHeight: 1.7, maxWidth: isMobile ? "100%" : 440, marginBottom: 28,
-            }}>
-              Food, groceries, pharmacy and retail — one app for your entire day. Launching in Kumasi & Accra. Join the waitlist today.
-            </p>
-
-            {/* Inline CTA — stacks vertically on mobile */}
-            {isMobile ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28, width: "100%" }}>
-                <input
-                  type="email"
-                  placeholder="Enter your email address"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  onKeyDown={e => e.key === "Enter" && handleCTA()}
-                  style={{
-                    width: "100%", border: `2px solid ${DARK}`, outline: "none",
-                    padding: "14px 18px", fontSize: "1rem", borderRadius: 14,
-                    fontFamily: "Inter, sans-serif", color: DARK, background: WHITE,
-                  }}
-                />
-                <button onClick={handleCTA} style={{
-                  background: DARK, color: WHITE, border: "none", borderRadius: 14,
-                  padding: "15px", fontWeight: 700, fontSize: "1rem",
-                  fontFamily: "Inter, sans-serif", cursor: "pointer", width: "100%",
-                }}>
-                  Get Early Access →
-                </button>
-              </div>
-            ) : (
-              <div style={{
-                display: "flex", gap: 0,
-                background: WHITE, border: `2px solid ${DARK}`,
-                borderRadius: 999, overflow: "hidden",
-                maxWidth: 440, marginBottom: 32,
-                boxShadow: "0 8px 32px rgba(28,46,28,0.12)",
-              }}>
-                <input
-                  type="email"
-                  placeholder="Enter your email address"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  onKeyDown={e => e.key === "Enter" && handleCTA()}
-                  style={{
-                    flex: 1, border: "none", outline: "none",
-                    padding: "14px 20px", fontSize: ".95rem",
-                    fontFamily: "Inter, sans-serif", background: "transparent",
-                    color: DARK,
-                  }}
-                />
-                <button onClick={handleCTA} style={{
-                  background: DARK, color: WHITE, border: "none",
-                  padding: "14px 24px", fontWeight: 700, fontSize: ".9rem",
-                  fontFamily: "Inter, sans-serif", cursor: "pointer",
-                  whiteSpace: "nowrap",
-                }}>
-                  Get Early Access
-                </button>
-              </div>
-            )}
-
-            {/* Category pills — horizontal scroll on mobile */}
-            <div className="cat-scroll" style={{ flexWrap: isMobile ? "nowrap" : "wrap" }}>
-              {categories.map(c => (
-                <button key={c.label} className="cat-pill" onClick={onWaitlist} style={{
-                  display: "flex", alignItems: "center", gap: 7, flexShrink: 0,
-                  background: SOFT, color: DARK, border: `1.5px solid ${BORDER}`,
-                  borderRadius: 999, padding: "8px 16px",
-                  fontSize: ".85rem", fontWeight: 600, cursor: "pointer",
-                  transition: "all .2s", fontFamily: "Inter, sans-serif",
-                  whiteSpace: "nowrap",
-                }}>
-                  <span>{c.icon}</span> {c.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Mobile-only: food image strip */}
-            {isMobile && (
-              <div style={{ display: "flex", gap: 8, marginTop: 24, width: "100%", overflow: "hidden" }}>
-                {[
-                  "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&q=80",
-                  "https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&q=80",
-                  "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&q=80",
-                ].map((src, i) => (
-                  <div key={i} style={{ flex: 1, height: 90, borderRadius: 12, overflow: "hidden" }}>
-                    <img src={src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                  </div>
-                ))}
-              </div>
-            )}
+      <div style={{
+        maxWidth: 1280, margin: "0 auto", width: "100%",
+        display: "grid",
+        gridTemplateColumns: mob ? "1fr" : "1.1fr 0.9fr",
+        gap: mob ? 40 : 80, alignItems: "center",
+      }}>
+        {/* Left */}
+        <div style={{ animation: "fadeUp .8s .1s both" }}>
+          {/* Badge */}
+          <div style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            border: `1.5px solid rgba(27,58,42,0.2)`,
+            borderRadius: 999, padding: "6px 16px", marginBottom: 28,
+          }}>
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: TERRA, display: "inline-block" }} />
+            <span style={{ fontSize: ".78rem", fontWeight: 600, color: TEXT, letterSpacing: ".06em", textTransform: "uppercase" }}>Now launching in Ghana</span>
           </div>
 
-          {/* Right: floating food cards grid */}
-          {!isMobile && (
-            <div style={{ position: "relative", height: 520, animation: "fadeUp 0.7s 0.3s both" }}>
-              {/* Main large card */}
-              <div style={{
-                position: "absolute", top: 0, right: 0, width: 280, height: 340,
-                borderRadius: 28, overflow: "hidden",
-                boxShadow: "0 24px 80px rgba(28,46,28,0.18)",
-                animation: "float 4s ease-in-out infinite",
-              }}>
-                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80" alt="Food" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(28,46,28,0.7) 0%, transparent 50%)" }} />
-                <div style={{ position: "absolute", bottom: 20, left: 20 }}>
-                  <div style={{ fontSize: ".7rem", fontWeight: 700, letterSpacing: ".1em", color: GREEN, textTransform: "uppercase", marginBottom: 4 }}>Food delivery</div>
-                  <div style={{ fontSize: "1.1rem", fontWeight: 700, color: WHITE }}>Hot & fresh</div>
-                </div>
-              </div>
+          {/* Headline */}
+          <h1 style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: mob ? "clamp(2.6rem,11vw,3.4rem)" : "clamp(3.6rem,5.5vw,5.2rem)",
+            fontWeight: 900, lineHeight: 1.04,
+            letterSpacing: "-2.5px", color: TEXT,
+            marginBottom: 20, wordBreak: "break-word",
+          }}>
+            Order<br />
+            <em style={{ fontStyle: "normal", color: TERRA }}>anything.</em><br />
+            Delivered in<br />
+            <span style={{ position: "relative", display: "inline-block" }}>
+              30 min.
+              <span style={{
+                position: "absolute", bottom: -6, left: 0, right: 0, height: 5,
+                background: GOLD, borderRadius: 99,
+              }} />
+            </span>
+          </h1>
 
-              {/* Second card */}
-              <div style={{
-                position: "absolute", top: 120, left: 0, width: 220, height: 260,
-                borderRadius: 24, overflow: "hidden",
-                boxShadow: "0 16px 60px rgba(28,46,28,0.14)",
-                animation: "float 4s ease-in-out 0.8s infinite",
-              }}>
-                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=80" alt="Grocery" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(28,46,28,0.75) 0%, transparent 55%)" }} />
-                <div style={{ position: "absolute", bottom: 16, left: 16 }}>
-                  <div style={{ fontSize: ".68rem", fontWeight: 700, letterSpacing: ".1em", color: GREEN, textTransform: "uppercase", marginBottom: 3 }}>Grocery</div>
-                  <div style={{ fontSize: ".95rem", fontWeight: 700, color: WHITE }}>Fresh produce</div>
-                </div>
-              </div>
+          <p style={{
+            fontSize: mob ? ".95rem" : "1.05rem",
+            color: MUTED, lineHeight: 1.75,
+            maxWidth: 460, marginBottom: 36, marginTop: 16,
+          }}>
+            Food, groceries, pharmacy and retail — one app for your entire day.
+            Built for <strong style={{ color: TEXT }}>Kumasi</strong> &amp; <strong style={{ color: TEXT }}>Accra</strong>.
+            Ride with mobile money, land at your door.
+          </p>
 
-              {/* Third card */}
-              <div style={{
-                position: "absolute", bottom: 0, right: 40, width: 200, height: 200,
-                borderRadius: 24, overflow: "hidden",
-                boxShadow: "0 12px 48px rgba(28,46,28,0.12)",
-                animation: "float 4s ease-in-out 1.6s infinite",
-              }}>
-                <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80" alt="Pharmacy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(28,46,28,0.75) 0%, transparent 55%)" }} />
-                <div style={{ position: "absolute", bottom: 14, left: 14 }}>
-                  <div style={{ fontSize: ".68rem", fontWeight: 700, letterSpacing: ".1em", color: GREEN, textTransform: "uppercase", marginBottom: 3 }}>Pharmacy</div>
-                  <div style={{ fontSize: ".9rem", fontWeight: 700, color: WHITE }}>Essentials</div>
-                </div>
-              </div>
+          {/* Role pills */}
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 28 }}>
+            {roles.map(r => (
+              <button key={r.id} className="pill-role" onClick={() => { setRole(r.id); onWaitlist(); }} style={{
+                padding: "11px 22px", borderRadius: 999,
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontWeight: 700, fontSize: ".88rem", cursor: "pointer",
+                background: role === r.id ? DARK : "transparent",
+                color: role === r.id ? WHITE : TEXT,
+                border: `2px solid ${role === r.id ? DARK : "rgba(27,58,42,0.22)"}`,
+                transition: "all .2s",
+              }}>{r.label}</button>
+            ))}
+          </div>
+        </div>
 
-              {/* Floating badge: delivery time */}
+        {/* Right: image */}
+        {!mob && (
+          <div style={{ position: "relative", animation: "fadeUp .8s .3s both" }}>
+            {/* Main food image */}
+            <div style={{ borderRadius: 24, overflow: "hidden", position: "relative" }}>
+              <img
+                src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&q=85"
+                alt="Food"
+                style={{ width: "100%", height: 500, objectFit: "cover", display: "block" }}
+              />
+              {/* Circular badge overlay */}
               <div style={{
-                position: "absolute", top: 40, left: 40,
-                background: WHITE, borderRadius: 18, padding: "12px 18px",
-                boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
-                display: "flex", alignItems: "center", gap: 12,
-                animation: "float 3.5s ease-in-out 0.4s infinite",
+                position: "absolute", top: "50%", left: "50%",
+                transform: "translate(-50%, -50%)",
               }}>
-                <div style={{
-                  width: 40, height: 40, borderRadius: "50%",
-                  background: SOFT, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem",
-                }}>🛵</div>
-                <div>
-                  <div style={{ fontSize: ".7rem", color: MUTED, fontWeight: 500 }}>Arriving in</div>
-                  <div style={{ fontSize: ".95rem", color: DARK, fontWeight: 800 }}>22 min</div>
-                </div>
-              </div>
-
-              {/* Rating badge */}
-              <div style={{
-                position: "absolute", top: 280, right: -10,
-                background: GREEN, borderRadius: 16, padding: "10px 16px",
-                boxShadow: "0 8px 24px rgba(22,196,94,0.35)",
-                display: "flex", alignItems: "center", gap: 8,
-                animation: "float 3s ease-in-out 1.2s infinite",
-              }}>
-                <span style={{ fontSize: "1rem" }}>⭐</span>
-                <div>
-                  <div style={{ fontSize: ".9rem", fontWeight: 800, color: WHITE }}>4.9</div>
-                  <div style={{ fontSize: ".68rem", color: "rgba(255,255,255,0.8)" }}>Top rated</div>
-                </div>
+                <CircularBadge />
               </div>
             </div>
-          )}
-        </div>
+
+            {/* Floating delivery badge */}
+            <div style={{
+              position: "absolute", bottom: 48, left: -32,
+              background: GOLD, borderRadius: 999, padding: "12px 20px",
+              display: "flex", alignItems: "center", gap: 10,
+              boxShadow: "0 8px 32px rgba(0,0,0,0.14)",
+            }}>
+              <span style={{ fontSize: "1.1rem" }}>📡</span>
+              <div>
+                <div style={{ fontSize: ".68rem", color: DARK, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".06em" }}>Arriving in</div>
+                <div style={{ fontSize: "1rem", color: DARK, fontWeight: 900 }}>22 min</div>
+              </div>
+            </div>
+
+            {/* Grocery image below */}
+            <div style={{ borderRadius: 16, overflow: "hidden", marginTop: 12, height: 160 }}>
+              <img
+                src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80"
+                alt="Grocery"
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-// ── Stats bar ──────────────────────────────────────────────────────────────────
-function StatsBar() {
-  const stats = [
-    { value: "30 min", label: "Average delivery" },
-    { value: "0%", label: "Commission — first 30 days" },
-    { value: "100+", label: "Local vendors at launch" },
-    { value: "Live", label: "GPS order tracking" },
-  ];
-  const w = useWindowWidth();
-  const isMobile = w < 768;
-  const [ref, vis] = useReveal();
+// ── Circular badge ─────────────────────────────────────────────────────────────
+function CircularBadge() {
+  return (
+    <svg width="148" height="148" viewBox="0 0 148 148">
+      <circle cx="74" cy="74" r="74" fill={DARK} fillOpacity=".88" />
+      <circle cx="74" cy="74" r="26" fill={GOLD} />
+      <path d="M77 54 L68 74 L74 74 L71 94 L80 74 L74 74 L77 54Z" fill={DARK} />
+      <defs>
+        <path id="ctext" d="M74,74 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1,-104,0" />
+      </defs>
+      <text fill={WHITE} fontSize="9.5" fontWeight="700" letterSpacing="4.5" fontFamily="Inter,sans-serif">
+        <textPath href="#ctext">KUMASI · ACCRA · KUMASI · ACCRA ·</textPath>
+      </text>
+    </svg>
+  );
+}
+
+// ── Ticker ─────────────────────────────────────────────────────────────────────
+function Ticker() {
+  const items = ["MOBILE MONEY NATIVE", "LIVE GPS TRACKING", "BUILT IN GHANA", "30-MIN DELIVERY", "ZERO COMMISSION — FIRST 30 DAYS", "ONE APP · EVERYTHING"];
+  const text = items.join("   ·   ") + "   ·   ";
+  const doubled = text + text;
 
   return (
-    <section style={{ background: DARK, padding: isMobile ? "48px 20px" : "56px 48px" }}>
-      <div ref={ref} style={{
-        maxWidth: 1200, margin: "0 auto",
-        display: "grid",
-        gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)",
-        gap: isMobile ? 32 : 0,
-        opacity: vis ? 1 : 0, transition: "opacity 0.8s",
-      }}>
-        {stats.map((s, i) => (
-          <div key={i} style={{
-            textAlign: "center",
-            borderRight: !isMobile && i < stats.length - 1 ? `1px solid rgba(255,255,255,0.1)` : "none",
-            borderBottom: isMobile && i < 2 ? `1px solid rgba(255,255,255,0.08)` : "none",
-            padding: isMobile ? "0 12px 24px" : "0 32px",
-            marginBottom: isMobile && i < 2 ? 24 : 0,
-          }}>
-            <div style={{ fontSize: isMobile ? "1.8rem" : "2.4rem", fontWeight: 900, color: GREEN, lineHeight: 1, marginBottom: 6 }}>{s.value}</div>
-            <div style={{ fontSize: isMobile ? ".78rem" : ".85rem", color: "rgba(255,255,255,0.5)", fontWeight: 500 }}>{s.label}</div>
-          </div>
+    <div style={{ background: GOLD, overflow: "hidden", padding: "14px 0", borderTop: `1px solid rgba(27,58,42,0.12)`, borderBottom: `1px solid rgba(27,58,42,0.12)` }}>
+      <div style={{ display: "flex", width: "max-content", animation: "ticker 28s linear infinite" }}>
+        {[...Array(2)].map((_, i) => (
+          <span key={i} style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontWeight: 800, fontSize: ".85rem",
+            color: DARK, letterSpacing: ".12em",
+            textTransform: "uppercase", whiteSpace: "nowrap",
+            padding: "0 2px",
+          }}>{doubled}</span>
         ))}
       </div>
-    </section>
+    </div>
   );
 }
 
 // ── Categories ─────────────────────────────────────────────────────────────────
 function Categories({ onWaitlist }) {
   const [ref, vis] = useReveal();
-  const w = useWindowWidth();
-  const isMobile = w < 768;
+  const w = useW();
+  const mob = w < 768;
 
   const cats = [
-    { icon: "🍔", label: "Food", desc: "Local restaurants & chops bars", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80" },
-    { icon: "🛒", label: "Grocery", desc: "Fresh produce & daily items", img: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80" },
-    { icon: "💊", label: "Pharmacy", desc: "Medicines & health essentials", img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80" },
-    { icon: "🛍️", label: "Retail", desc: "Local shops & boutiques", img: "https://images.pexels.com/photos/6994304/pexels-photo-6994304.jpeg" },
+    { label: "Food", sub: "LOCAL CHOPS BARS & RESTAURANTS", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=900&q=80", large: true },
+    { label: "Grocery", sub: "FRESH MARKET TO DOOR", img: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80" },
+    { label: "Pharmacy", sub: "MEDS & HEALTH ESSENTIALS", img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80" },
+    { label: "Retail", sub: "LOCAL SHOPS & BOUTIQUES", img: "https://images.pexels.com/photos/6994304/pexels-photo-6994304.jpeg", wide: true },
   ];
 
   return (
-    <section style={{ padding: isMobile ? "64px 20px" : "100px 48px", background: WHITE }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+    <section style={{ padding: mob ? "64px 20px" : "100px 48px", background: CREAM }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+        {/* Header */}
         <div ref={ref} style={{
+          display: mob ? "block" : "flex",
+          justifyContent: "space-between", alignItems: "flex-end",
+          marginBottom: 40,
           opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(24px)",
-          transition: "opacity 0.7s, transform 0.7s",
-          marginBottom: 48,
+          transition: "opacity .7s, transform .7s",
         }}>
-          <div style={{ display: "inline-block", background: SOFT, border: `1px solid ${BORDER}`, borderRadius: 999, padding: "5px 14px", marginBottom: 16 }}>
-            <span style={{ fontSize: ".78rem", fontWeight: 700, color: GREEN, letterSpacing: ".08em", textTransform: "uppercase" }}>One app</span>
+          <div>
+            <p style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".14em", color: MUTED, textTransform: "uppercase", marginBottom: 12 }}>ONE APP · MANY SHELVES</p>
+            <h2 style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: mob ? "2rem" : "clamp(2.4rem,3.5vw,3.2rem)",
+              fontWeight: 900, color: TEXT,
+              letterSpacing: "-1.5px", lineHeight: 1.1,
+            }}>
+              Everything your city<br />
+              <em style={{ fontStyle: "normal", color: TERRA }}>has to offer.</em>
+            </h2>
           </div>
-          <h2 style={{ fontSize: isMobile ? "2rem" : "clamp(2.2rem,3.5vw,3rem)", fontWeight: 900, color: DARK, letterSpacing: "-1.5px", lineHeight: 1.1, maxWidth: 480 }}>
-            Everything your city has to offer
-          </h2>
+          {!mob && (
+            <p style={{ maxWidth: 300, fontSize: ".95rem", color: MUTED, lineHeight: 1.75, textAlign: "right" }}>
+              From midnight jollof to a last-minute prescription — Kaya is the single tap between you and your day.
+            </p>
+          )}
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 16 }}>
-          {cats.map((c, i) => (
-            <div key={i} className="feature-card" onClick={onWaitlist} style={{
-              borderRadius: 20, overflow: "hidden", cursor: "pointer",
-              position: "relative", height: isMobile ? 200 : 280,
-              boxShadow: "0 4px 24px rgba(28,46,28,0.08)",
-              transition: "all .3s ease",
-              opacity: vis ? 1 : 0,
-              transform: vis ? "none" : "translateY(24px)",
-              transitionDelay: `${i * 0.1}s`,
-            }}>
-              <img src={c.img} alt={c.label} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(28,46,28,0.88) 0%, rgba(28,46,28,0.1) 60%)" }} />
-              <div style={{ position: "absolute", top: 14, left: 14 }}>
-                <div style={{
-                  background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)",
-                  borderRadius: 12, padding: "6px 10px", display: "inline-block",
-                }}>
-                  <span style={{ fontSize: "1.1rem" }}>{c.icon}</span>
-                </div>
-              </div>
-              <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px 18px" }}>
-                <div style={{ fontSize: ".68rem", fontWeight: 700, letterSpacing: ".1em", color: GREEN, textTransform: "uppercase", marginBottom: 4 }}>{c.label}</div>
-                <div style={{ fontSize: isMobile ? ".85rem" : ".95rem", fontWeight: 700, color: WHITE, lineHeight: 1.3 }}>{c.desc}</div>
-              </div>
+        {/* Bento grid */}
+        {mob ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {cats.map((c, i) => <CatCard key={i} cat={c} height={i === 0 ? 260 : 180} vis={vis} onClick={onWaitlist} />)}
+          </div>
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gridTemplateRows: "340px 340px", gap: 10 }}>
+            {/* Food — spans 2 rows */}
+            <div style={{ gridRow: "1 / 3" }}>
+              <CatCard cat={cats[0]} height="100%" vis={vis} onClick={onWaitlist} />
             </div>
-          ))}
-        </div>
+            <CatCard cat={cats[1]} height="100%" vis={vis} onClick={onWaitlist} delay=".1s" />
+            <CatCard cat={cats[2]} height="100%" vis={vis} onClick={onWaitlist} delay=".2s" />
+          </div>
+        )}
+        {/* Retail — full width below */}
+        {!mob && (
+          <div style={{ marginTop: 10 }}>
+            <CatCard cat={cats[3]} height={240} vis={vis} onClick={onWaitlist} delay=".3s" />
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
+function CatCard({ cat, height, vis, onClick, delay = "0s" }) {
+  return (
+    <div className="cat-card" onClick={onClick} style={{
+      borderRadius: 20, position: "relative",
+      height: typeof height === "number" ? height : "100%",
+      opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(24px)",
+      transition: `opacity .7s ${delay}, transform .7s ${delay}`,
+    }}>
+      <img src={cat.img} alt={cat.label} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", borderRadius: 20 }} />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(27,58,42,0.86) 0%, transparent 55%)", borderRadius: 20 }} />
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: cat.large ? "28px 28px" : "20px 20px" }}>
+        <p style={{ fontSize: ".65rem", fontWeight: 700, letterSpacing: ".12em", color: GOLD, textTransform: "uppercase", marginBottom: 6 }}>{cat.sub}</p>
+        <h3 style={{
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontSize: cat.large ? "2.4rem" : "1.6rem",
+          fontWeight: 900, color: WHITE, lineHeight: 1.05, letterSpacing: "-1px",
+        }}>{cat.label}</h3>
+      </div>
+    </div>
+  );
+}
+
 // ── How it works ───────────────────────────────────────────────────────────────
 const STEPS = [
-  { n: "01", icon: "📍", title: "Share your location", desc: "Tell us where you are. We show you everything available nearby in seconds." },
-  { n: "02", icon: "🛒", title: "Browse & order", desc: "Pick from restaurants, grocery stores, pharmacies, retail shops and more." },
-  { n: "03", icon: "📡", title: "Track in real time", desc: "Watch your order live on a map from the moment it's packed to your door." },
-  { n: "04", icon: "🎉", title: "Enjoy, delivered", desc: "Fast, fresh, exactly as ordered. Right at your door in under 30 minutes." },
+  { n: "01", icon: "📍", title: "Share your location", desc: "Tell us where you are. We surface everything available nearby in seconds." },
+  { n: "02", icon: "🛒", title: "Browse & order", desc: "Pick from restaurants, grocery stores, pharmacies, retail and more." },
+  { n: "03", icon: "📡", title: "Track in real time", desc: "Watch your order live on the map — from pack-up to your front door." },
+  { n: "04", icon: "⚡", title: "Enjoy, delivered", desc: "Fast, fresh, exactly as ordered. Right at your door in under 30 minutes." },
 ];
 
 function HowItWorks() {
   const [ref, vis] = useReveal();
-  const w = useWindowWidth();
-  const isMobile = w < 768;
+  const w = useW();
+  const mob = w < 768;
 
   return (
-    <section style={{ padding: isMobile ? "64px 20px" : "100px 48px", background: CREAM }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+    <section style={{ background: DARK, padding: mob ? "64px 20px" : "100px 48px" }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto" }}>
         <div ref={ref} style={{
           opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(24px)",
-          transition: "opacity 0.7s, transform 0.7s",
-          textAlign: "center", marginBottom: 64,
+          transition: "opacity .7s, transform .7s", marginBottom: 56,
         }}>
-          <div style={{ display: "inline-block", background: SOFT, border: `1px solid ${BORDER}`, borderRadius: 999, padding: "5px 14px", marginBottom: 16 }}>
-            <span style={{ fontSize: ".78rem", fontWeight: 700, color: GREEN, letterSpacing: ".08em", textTransform: "uppercase" }}>Simple as that</span>
-          </div>
-          <h2 style={{ fontSize: isMobile ? "2rem" : "clamp(2.2rem,3.5vw,3rem)", fontWeight: 900, color: DARK, letterSpacing: "-1.5px", lineHeight: 1.1 }}>
-            How Kaya works
-          </h2>
+          <p style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".14em", color: GOLD, textTransform: "uppercase", marginBottom: 14 }}>Simple as that</p>
+          <h2 style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: mob ? "2.4rem" : "clamp(2.8rem,4vw,3.8rem)",
+            fontWeight: 900, color: WHITE, letterSpacing: "-2px", lineHeight: 1.05,
+          }}>How Kaya works.</h2>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(4,1fr)", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr 1fr" : "repeat(4,1fr)", gap: 12 }}>
           {STEPS.map((s, i) => (
-            <div key={i} className="step-card" style={{
-              background: WHITE, borderRadius: 20,
-              padding: isMobile ? "20px" : "28px 24px",
-              border: `1.5px solid ${BORDER}`,
-              transition: "all .25s ease",
-              opacity: vis ? 1 : 0,
-              transform: vis ? "none" : "translateY(24px)",
-              transitionDelay: `${i * 0.1}s`,
-              display: isMobile ? "flex" : "block",
-              gap: isMobile ? 16 : 0,
-              alignItems: isMobile ? "flex-start" : "unset",
+            <div key={i} style={{
+              background: "rgba(255,255,255,0.06)", borderRadius: 20,
+              padding: "28px 24px", border: "1px solid rgba(255,255,255,0.1)",
+              opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(24px)",
+              transition: `opacity .6s ${i * .12}s, transform .6s ${i * .12}s`,
+              position: "relative",
             }}>
-              <div style={{ fontSize: isMobile ? "1.6rem" : "1.8rem", marginBottom: isMobile ? 0 : 16, flexShrink: 0 }}>{s.icon}</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: ".7rem", fontWeight: 700, letterSpacing: ".1em", color: GREEN, textTransform: "uppercase", marginBottom: 6 }}>{s.n}</div>
-                <h3 style={{ fontSize: "1rem", fontWeight: 800, color: DARK, marginBottom: 6, lineHeight: 1.3 }}>{s.title}</h3>
-                <p style={{ fontSize: ".88rem", color: MUTED, lineHeight: 1.7 }}>{s.desc}</p>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 32 }}>
+                <span style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontSize: "2.8rem", fontWeight: 900,
+                  color: GOLD, lineHeight: 1,
+                }}>{s.n}</span>
+                <div style={{
+                  width: 36, height: 36, borderRadius: "50%",
+                  background: "rgba(255,255,255,0.1)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: "1rem",
+                }}>{s.icon}</div>
               </div>
+              <h3 style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontSize: ".98rem", fontWeight: 800,
+                color: WHITE, marginBottom: 10, lineHeight: 1.3,
+              }}>{s.title}</h3>
+              <p style={{ fontSize: ".84rem", color: "rgba(255,255,255,0.45)", lineHeight: 1.7 }}>{s.desc}</p>
+              {i < STEPS.length - 1 && !mob && (
+                <span style={{ position: "absolute", top: "50%", right: -18, color: "rgba(255,255,255,0.2)", fontSize: "1.2rem" }}>→</span>
+              )}
             </div>
           ))}
         </div>
@@ -539,122 +450,207 @@ function HowItWorks() {
 // ── Why Kaya ───────────────────────────────────────────────────────────────────
 function WhyKaya() {
   const [ref, vis] = useReveal();
-  const w = useWindowWidth();
-  const isMobile = w < 768;
-
-  const perks = [
-    { icon: "⚡", title: "30-minute delivery", desc: "We're built for speed. Our network of riders ensures your order arrives fast, every time." },
-    { icon: "💰", title: "Zero commission — first 30 days", desc: "Every vendor on Kaya starts with 30 days completely commission-free. We grow together." },
-    { icon: "📍", title: "Live GPS tracking", desc: "Know exactly where your order is from the moment it leaves the store to your front door." },
-    { icon: "🇬🇭", title: "Built for Ghana", desc: "Mobile money native, local brand, local riders. Kaya is designed specifically for the Ghanaian market." },
-    { icon: "🛡️", title: "Secure payments", desc: "Powered by Paystack. Pay with card or mobile money — your transactions are always protected." },
-    { icon: "🤝", title: "Fair for everyone", desc: "Lower commission than any competitor. Better pay for riders. Better prices for customers." },
-  ];
+  const w = useW();
+  const mob = w < 768;
 
   return (
-    <section style={{ padding: isMobile ? "64px 20px" : "100px 48px", background: WHITE }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+    <section style={{ background: CREAM, padding: mob ? "64px 20px" : "100px 48px" }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto" }}>
         <div ref={ref} style={{
           opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(24px)",
-          transition: "opacity 0.7s, transform 0.7s",
-          textAlign: "center", marginBottom: 56,
+          transition: "opacity .7s, transform .7s", marginBottom: 48,
         }}>
-          <div style={{ display: "inline-block", background: SOFT, border: `1px solid ${BORDER}`, borderRadius: 999, padding: "5px 14px", marginBottom: 16 }}>
-            <span style={{ fontSize: ".78rem", fontWeight: 700, color: GREEN, letterSpacing: ".08em", textTransform: "uppercase" }}>Why Kaya</span>
-          </div>
-          <h2 style={{ fontSize: isMobile ? "2rem" : "clamp(2.2rem,3.5vw,3rem)", fontWeight: 900, color: DARK, letterSpacing: "-1.5px", lineHeight: 1.1 }}>
-            Delivery done right
+          <p style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".14em", color: MUTED, textTransform: "uppercase", marginBottom: 14 }}>Why Kaya</p>
+          <h2 style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: mob ? "2.2rem" : "clamp(2.6rem,4vw,3.6rem)",
+            fontWeight: 900, color: TEXT, letterSpacing: "-2px", lineHeight: 1.05,
+          }}>
+            Delivery, done <em style={{ fontStyle: "normal", color: TERRA }}>right.</em>
           </h2>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3,1fr)", gap: 20 }}>
-          {perks.map((p, i) => (
-            <div key={i} style={{
-              background: CREAM, borderRadius: 20, padding: "28px 26px",
-              border: `1px solid ${BORDER}`,
-              opacity: vis ? 1 : 0,
-              transform: vis ? "none" : "translateY(24px)",
-              transition: `opacity 0.6s ${i * 0.08}s, transform 0.6s ${i * 0.08}s`,
-            }}>
-              <div style={{ fontSize: "1.8rem", marginBottom: 14 }}>{p.icon}</div>
-              <h3 style={{ fontSize: "1rem", fontWeight: 800, color: DARK, marginBottom: 8, lineHeight: 1.3 }}>{p.title}</h3>
-              <p style={{ fontSize: ".88rem", color: MUTED, lineHeight: 1.75 }}>{p.desc}</p>
+        {mob ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, opacity: vis ? 1 : 0, transition: "opacity .7s .2s" }}>
+            <BentoZero />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <BentoCard icon="⚡" stat="30min" title="Under 30-min delivery." desc="Our rider network is built for speed." light />
+              <BentoCard icon="📡" title="Live GPS tracking." desc="From pickup to your door." dark />
             </div>
-          ))}
-        </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+              <BentoCard emoji="🇬🇭" title="Built for Ghana." desc="Mobile money native." light small />
+              <BentoCard icon="🛡" title="Secure payments." desc="Powered by Paystack." light small />
+              <BentoCard icon="🤝" title="Fair for all." desc="Lower rates, better pay." light small />
+            </div>
+          </div>
+        ) : (
+          <div style={{ opacity: vis ? 1 : 0, transition: "opacity .7s .2s" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+              <BentoZero />
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <BentoCard icon="⚡" stat="30min" title="Under~30-minute delivery." desc="Our rider network is built for speed — every time." light />
+                <BentoCard icon="📡" title="Live GPS tracking." desc="Know exactly where your order is — from pickup to your door." dark />
+              </div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+              <BentoCard emoji="🇬🇭" title="Built for Ghana." desc="Mobile money native. Local brand. Local riders." light />
+              <BentoCard icon="🛡" title="Secure payments." desc="Powered by Paystack. Card or mobile money — always protected." light />
+              <BentoCard icon="🤝" title="Fair for everyone." desc="Lower commission than competitors. Better pay for riders." light />
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-// ── Partners (Riders & Vendors) ────────────────────────────────────────────────
-function Partners({ onWaitlist }) {
-  const [ref, vis] = useReveal();
-  const w = useWindowWidth();
-  const isMobile = w < 768;
+function BentoZero() {
+  return (
+    <div style={{
+      background: WHITE, borderRadius: 20, padding: "36px 32px",
+      border: `1px solid rgba(27,58,42,0.1)`,
+    }}>
+      <p style={{ fontSize: ".7rem", fontWeight: 700, letterSpacing: ".12em", color: MUTED, textTransform: "uppercase", marginBottom: 8 }}>For Vendors</p>
+      <div style={{
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        fontSize: "clamp(5rem,12vw,8rem)", fontWeight: 900,
+        color: DARK, lineHeight: .9, letterSpacing: "-4px",
+        marginBottom: 20,
+      }}>0%</div>
+      <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "1.15rem", fontWeight: 800, color: TEXT, marginBottom: 8 }}>Zero commission — first 30 days.</h3>
+      <p style={{ fontSize: ".88rem", color: MUTED, lineHeight: 1.7 }}>Every vendor on Kaya launches commission-free. We grow together, not at your expense.</p>
+    </div>
+  );
+}
 
-  const cards = [
-    {
-      title: "Deliver with Kaya",
-      desc: "Set your own hours. Earn on your terms. Deliver food, groceries and more across your city.",
-      cta: "Become a Rider →",
-      img: "https://i.ibb.co/sJyvFVsL/P2.png",
-      badge: "🛵 Riders",
-    },
-    {
-      title: "Grow your business",
-      desc: "Reach new customers across your city. Zero commission for the first 30 days. No hidden fees.",
-      cta: "Partner with Kaya →",
-      img: "https://i.ibb.co/prKTjV1H/Gemini-Generated-Image-mgbgpzmgbgpzmgbg.png",
-      badge: "🏪 Vendors",
-    },
+function BentoCard({ icon, emoji, stat, title, desc, light, dark: isDark, small }) {
+  return (
+    <div style={{
+      background: isDark ? DARK : light ? WHITE : CREAM,
+      borderRadius: 20, padding: small ? "20px" : "28px 24px",
+      border: isDark ? "none" : `1px solid rgba(27,58,42,0.1)`,
+    }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+        <span style={{ fontSize: isDark ? "1.2rem" : "1.1rem" }}>{emoji || icon}</span>
+        {stat && <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 900, fontSize: "1.6rem", color: TEXT }}>{stat}</span>}
+      </div>
+      <h3 style={{
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        fontSize: small ? ".88rem" : "1rem", fontWeight: 800,
+        color: isDark ? WHITE : TEXT, marginBottom: 6, lineHeight: 1.3,
+      }}>{title}</h3>
+      <p style={{ fontSize: small ? ".78rem" : ".85rem", color: isDark ? "rgba(255,255,255,0.45)" : MUTED, lineHeight: 1.65 }}>{desc}</p>
+    </div>
+  );
+}
+
+// ── Stats ──────────────────────────────────────────────────────────────────────
+function Stats() {
+  const [ref, vis] = useReveal();
+  const w = useW();
+  const mob = w < 768;
+
+  const items = [
+    { value: "30 min", label: "Average delivery" },
+    { value: "4.9★", label: "App store rating" },
+    { value: "100+", label: "Vendors at launch" },
+    { value: "Accra · Kumasi", label: "Launch cities" },
   ];
 
   return (
-    <section style={{ padding: isMobile ? "64px 20px" : "100px 48px", background: CREAM }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div ref={ref} style={{
-          opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(24px)",
-          transition: "opacity 0.7s, transform 0.7s", marginBottom: 48,
-        }}>
-          <div style={{ display: "inline-block", background: SOFT, border: `1px solid ${BORDER}`, borderRadius: 999, padding: "5px 14px", marginBottom: 16 }}>
-            <span style={{ fontSize: ".78rem", fontWeight: 700, color: GREEN, letterSpacing: ".08em", textTransform: "uppercase" }}>Join Kaya</span>
+    <section style={{ background: CREAM, padding: mob ? "0 20px 48px" : "0 48px 80px" }}>
+      <div ref={ref} style={{
+        maxWidth: 1280, margin: "0 auto",
+        display: "grid",
+        gridTemplateColumns: mob ? "1fr 1fr" : "repeat(4,1fr)",
+        gap: 10,
+        opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(24px)",
+        transition: "opacity .7s, transform .7s",
+      }}>
+        {items.map((s, i) => (
+          <div key={i} style={{
+            background: WHITE, borderRadius: 16, padding: "24px 20px",
+            border: `1px solid rgba(27,58,42,0.1)`, textAlign: "center",
+          }}>
+            <div style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: mob ? "1.4rem" : "1.7rem", fontWeight: 900,
+              color: TEXT, lineHeight: 1, marginBottom: 8,
+            }}>{s.value}</div>
+            <div style={{ fontSize: ".78rem", color: MUTED, fontWeight: 500 }}>{s.label}</div>
           </div>
-          <h2 style={{ fontSize: isMobile ? "2rem" : "clamp(2.2rem,3.5vw,3rem)", fontWeight: 900, color: DARK, letterSpacing: "-1.5px", lineHeight: 1.1 }}>
-            For riders &amp; businesses
-          </h2>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ── Partners ───────────────────────────────────────────────────────────────────
+function Partners({ onWaitlist }) {
+  const [ref, vis] = useReveal();
+  const w = useW();
+  const mob = w < 768;
+
+  return (
+    <section style={{ background: CREAM, padding: mob ? "0 20px 64px" : "0 48px 100px" }}>
+      <div ref={ref} style={{
+        maxWidth: 1280, margin: "0 auto",
+        display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr",
+        gap: 10,
+        opacity: vis ? 1 : 0, transition: "opacity .7s",
+      }}>
+        {/* Riders */}
+        <div style={{ borderRadius: 20, overflow: "hidden", position: "relative", minHeight: mob ? 340 : 460 }}>
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" alt="Rider" style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(27,58,42,0.92) 0%, rgba(27,58,42,0.3) 60%)" }} />
+          <div style={{ position: "absolute", top: 20, left: 20 }}>
+            <span style={{ border: `1.5px solid rgba(255,255,255,0.5)`, color: WHITE, borderRadius: 999, padding: "5px 14px", fontSize: ".72rem", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase" }}>Riders</span>
+          </div>
+          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: mob ? "24px" : "36px 32px" }}>
+            <h3 style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: mob ? "1.8rem" : "2.6rem", fontWeight: 900,
+              color: WHITE, lineHeight: 1.1, letterSpacing: "-1px", marginBottom: 12,
+            }}>
+              Deliver with <em style={{ fontStyle: "normal", color: GOLD }}>Kaya.</em>
+            </h3>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: ".92rem", lineHeight: 1.7, marginBottom: 24 }}>
+              Set your own hours. Earn on your terms. Deliver food, groceries and more across your city.
+            </p>
+            <button onClick={onWaitlist} style={{
+              background: GOLD, color: DARK, border: "none", borderRadius: 999,
+              padding: "13px 28px", fontWeight: 800, fontSize: ".9rem",
+              fontFamily: "'Plus Jakarta Sans', sans-serif", cursor: "pointer",
+              display: "flex", alignItems: "center", gap: 8,
+            }}>Become a rider →</button>
+          </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 20 }}>
-          {cards.map((c, i) => (
-            <div key={i} className="partner-card" style={{
-              borderRadius: 24, overflow: "hidden",
-              minHeight: isMobile ? 340 : 420, position: "relative",
-              display: "flex", flexDirection: "column", justifyContent: "flex-end",
-              opacity: vis ? 1 : 0,
-              transform: vis ? "none" : "translateY(24px)",
-              transition: `opacity 0.7s ${i * 0.15}s, transform 0.7s ${i * 0.15}s`,
-              cursor: "pointer",
+        {/* Vendors */}
+        <div style={{ borderRadius: 20, overflow: "hidden", position: "relative", minHeight: mob ? 340 : 460 }}>
+          <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80" alt="Vendor" style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(27,58,42,0.92) 0%, rgba(27,58,42,0.3) 60%)" }} />
+          <div style={{ position: "absolute", top: 20, left: 20 }}>
+            <span style={{ border: `1.5px solid rgba(255,255,255,0.5)`, color: WHITE, borderRadius: 999, padding: "5px 14px", fontSize: ".72rem", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase" }}>Vendors</span>
+          </div>
+          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: mob ? "24px" : "36px 32px" }}>
+            <h3 style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: mob ? "1.8rem" : "2.6rem", fontWeight: 900,
+              color: WHITE, lineHeight: 1.1, letterSpacing: "-1px", marginBottom: 12,
             }}>
-              <img src={c.img} alt={c.title} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(28,46,28,0.94) 0%, rgba(28,46,28,0.1) 60%)" }} />
-              <div style={{ position: "absolute", top: 20, left: 20 }}>
-                <div style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", borderRadius: 999, padding: "6px 14px", display: "inline-block" }}>
-                  <span style={{ fontSize: ".78rem", fontWeight: 700, color: WHITE }}>{c.badge}</span>
-                </div>
-              </div>
-              <div style={{ position: "relative", zIndex: 2, padding: "36px 32px" }}>
-                <h3 style={{ fontSize: "1.7rem", fontWeight: 900, color: WHITE, marginBottom: 10, lineHeight: 1.15, letterSpacing: "-0.5px" }}>{c.title}</h3>
-                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: ".92rem", lineHeight: 1.7, marginBottom: 24 }}>{c.desc}</p>
-                <button className="partner-btn" onClick={onWaitlist} style={{
-                  background: WHITE, color: DARK, border: "none", borderRadius: 999,
-                  padding: "12px 26px", fontWeight: 700, fontSize: ".9rem",
-                  fontFamily: "Inter, sans-serif", cursor: "pointer",
-                  transition: "background .2s, color .2s",
-                }}>{c.cta}</button>
-              </div>
-            </div>
-          ))}
+              Grow your <em style={{ fontStyle: "normal", color: TERRA }}>business.</em>
+            </h3>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: ".92rem", lineHeight: 1.7, marginBottom: 24 }}>
+              Reach new customers across your city. Zero commission for 30 days. No hidden fees.
+            </p>
+            <button onClick={onWaitlist} style={{
+              background: WHITE, color: DARK, border: "none", borderRadius: 999,
+              padding: "13px 28px", fontWeight: 800, fontSize: ".9rem",
+              fontFamily: "'Plus Jakarta Sans', sans-serif", cursor: "pointer",
+              display: "flex", alignItems: "center", gap: 8,
+            }}>Partner with Kaya →</button>
+          </div>
         </div>
       </div>
     </section>
@@ -664,46 +660,77 @@ function Partners({ onWaitlist }) {
 // ── Waitlist CTA ───────────────────────────────────────────────────────────────
 function WaitlistCTA({ onWaitlist }) {
   const [ref, vis] = useReveal();
-  const w = useWindowWidth();
-  const isMobile = w < 768;
+  const [role, setRole] = useState("order");
+  const w = useW();
+  const mob = w < 768;
+
+  const roles = [
+    { id: "order", label: "I want to order" },
+    { id: "ride",  label: "Ride with Kaya" },
+    { id: "sell",  label: "Sell on Kaya" },
+  ];
 
   return (
-    <section style={{ padding: isMobile ? "80px 20px" : "120px 48px", background: DARK, position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "absolute", top: "-20%", left: "50%", transform: "translateX(-50%)", width: "60vw", height: "60vw", background: `${GREEN}0F`, borderRadius: "50%", pointerEvents: "none" }} />
+    <section style={{ background: TERRA, padding: mob ? "80px 20px" : "120px 48px", position: "relative", overflow: "hidden" }}>
       <div ref={ref} style={{
-        maxWidth: 680, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 1,
-        opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(24px)",
-        transition: "opacity 0.7s, transform 0.7s",
+        maxWidth: 800, margin: "0 auto", textAlign: "center",
+        opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(28px)",
+        transition: "opacity .7s, transform .7s",
       }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(22,196,94,0.15)", border: "1px solid rgba(22,196,94,0.3)", borderRadius: 999, padding: "6px 16px", marginBottom: 28 }}>
-          <span style={{ width: 8, height: 8, borderRadius: "50%", background: GREEN, display: "inline-block" }} />
-          <span style={{ fontSize: ".8rem", fontWeight: 600, color: GREEN }}>Waitlist now open</span>
-        </div>
+        <p style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".16em", color: GOLD, textTransform: "uppercase", marginBottom: 24 }}>Waitlist now open</p>
 
         <h2 style={{
-          fontFamily: "'DM Serif Display', serif",
-          fontSize: isMobile ? "2.4rem" : "clamp(2.4rem,4.5vw,3.8rem)",
-          color: WHITE, lineHeight: 1.08, letterSpacing: "-1.5px", marginBottom: 20,
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontSize: mob ? "2.8rem" : "clamp(3.2rem,6vw,5.2rem)",
+          fontWeight: 900, color: WHITE, lineHeight: 1.04,
+          letterSpacing: "-2.5px", marginBottom: 12,
         }}>
-          Be the first to<br /><em style={{ color: GREEN }}>experience Kaya</em>
+          Be the first to<br />experience Kaya.
         </h2>
 
-        <p style={{ color: "rgba(255,255,255,0.45)", marginBottom: 44, fontSize: "1rem", lineHeight: 1.8 }}>
-          Join thousands already on the waitlist. Get exclusive early access and launch-day perks when we go live.
+        {/* Gold underline */}
+        <div style={{ width: mob ? 200 : 320, height: 5, background: GOLD, borderRadius: 99, margin: "0 auto 28px" }} />
+
+        <p style={{ color: "rgba(255,255,255,0.65)", fontSize: mob ? ".9rem" : "1rem", lineHeight: 1.8, marginBottom: 36 }}>
+          Join thousands already on the waitlist. Get exclusive early access, launch-day perks, and founder pricing when we go live.
         </p>
 
-        <button onClick={onWaitlist} style={{
-          background: GREEN, color: WHITE, border: "none", borderRadius: 999,
-          padding: "16px 48px", fontWeight: 800, fontSize: "1rem",
-          fontFamily: "Inter, sans-serif", cursor: "pointer",
-          boxShadow: "0 8px 32px rgba(22,196,94,0.35)", transition: "opacity .2s",
-        }}
-          onMouseEnter={e => e.target.style.opacity = 0.85}
-          onMouseLeave={e => e.target.style.opacity = 1}
-        >
-          Reserve your spot →
-        </button>
-        <p style={{ marginTop: 16, fontSize: ".82rem", color: "rgba(255,255,255,0.2)" }}>Free to join. No credit card needed.</p>
+        {/* Role pills */}
+        <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap", marginBottom: 28 }}>
+          {roles.map(r => (
+            <button key={r.id} onClick={() => setRole(r.id)} style={{
+              padding: "10px 22px", borderRadius: 999, cursor: "pointer",
+              fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: ".88rem",
+              background: role === r.id ? GOLD : "transparent",
+              color: role === r.id ? DARK : WHITE,
+              border: `2px solid ${role === r.id ? GOLD : "rgba(255,255,255,0.4)"}`,
+              transition: "all .2s",
+            }}>{r.label}</button>
+          ))}
+        </div>
+
+        {/* Email CTA */}
+        <div style={{
+          display: "flex", gap: 0, maxWidth: 520, margin: "0 auto",
+          background: "rgba(255,255,255,0.15)", borderRadius: 999,
+          border: "2px solid rgba(255,255,255,0.3)", overflow: "hidden",
+        }}>
+          <input type="email" placeholder="you@kaya.gh" style={{
+            flex: 1, border: "none", outline: "none",
+            padding: "15px 22px", fontSize: ".95rem",
+            fontFamily: "'Inter', sans-serif",
+            background: "transparent", color: WHITE,
+          }} />
+          <button onClick={onWaitlist} style={{
+            background: DARK, color: WHITE, border: "none",
+            padding: "15px 26px", fontWeight: 800, fontSize: ".9rem",
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            cursor: "pointer", whiteSpace: "nowrap",
+            display: "flex", alignItems: "center", gap: 8,
+          }}>Join the waitlist →</button>
+        </div>
+
+        <p style={{ marginTop: 14, fontSize: ".78rem", color: "rgba(255,255,255,0.4)" }}>Free to join · No credit card · Launch perks included</p>
       </div>
     </section>
   );
@@ -711,40 +738,40 @@ function WaitlistCTA({ onWaitlist }) {
 
 // ── Footer ─────────────────────────────────────────────────────────────────────
 function Footer({ onWaitlist }) {
-  const w = useWindowWidth();
-  const isMobile = w < 768;
+  const w = useW();
+  const mob = w < 768;
 
   return (
-    <footer style={{ background: "#080e0a", padding: isMobile ? "56px 20px 32px" : "72px 48px 40px" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+    <footer style={{ background: DARK, padding: mob ? "60px 20px 32px" : "80px 48px 0", overflow: "hidden" }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto" }}>
         <div style={{
           display: "grid",
-          gridTemplateColumns: isMobile ? "1fr 1fr" : "2fr 1fr 1fr 1fr",
-          gap: isMobile ? 40 : 48, marginBottom: 56,
+          gridTemplateColumns: mob ? "1fr 1fr" : "1.8fr 1fr 1fr 1fr",
+          gap: mob ? 40 : 48, marginBottom: 56,
         }}>
-          <div style={{ gridColumn: isMobile ? "1 / -1" : "auto" }}>
-            <img src="/kaya-logo.png" alt="Kaya" style={{ height: 48, width: "auto", objectFit: "contain", filter: "brightness(0) invert(1)", marginBottom: 14 }} />
-            <p style={{ fontSize: ".88rem", color: "rgba(255,255,255,0.3)", lineHeight: 1.75, maxWidth: 220, marginBottom: 24 }}>
-              Everything you need, delivered fast. Kumasi &amp; Accra.
+          {/* Brand */}
+          <div style={{ gridColumn: mob ? "1 / -1" : "auto" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+              <img src="/kaya-logo.png" alt="Kaya" style={{ height: 32, filter: "brightness(0) invert(1)", objectFit: "contain" }} />
+            </div>
+            <p style={{ fontSize: ".88rem", color: "rgba(255,255,255,0.35)", lineHeight: 1.75, maxWidth: 240, marginBottom: 24 }}>
+              Ghana's everything-app. Food, groceries, pharmacy and retail — delivered in under 30 minutes.
             </p>
             <button onClick={onWaitlist} style={{
-              background: GREEN, color: WHITE, border: "none", borderRadius: 999,
+              background: TERRA, color: WHITE, border: "none", borderRadius: 999,
               padding: "10px 22px", fontWeight: 700, fontSize: ".85rem",
-              fontFamily: "Inter, sans-serif", cursor: "pointer", transition: "opacity .2s",
-            }}
-              onMouseEnter={e => e.target.style.opacity = 0.85}
-              onMouseLeave={e => e.target.style.opacity = 1}
-            >Join Waitlist</button>
+              fontFamily: "'Plus Jakarta Sans', sans-serif", cursor: "pointer",
+            }}>Join Waitlist</button>
           </div>
 
           {[
-            { title: "Company", links: ["About", "Careers", "Blog", "Press"] },
-            { title: "Services", links: ["Food", "Grocery", "Pharmacy", "Retail"] },
-            { title: "Partners", links: ["Become a Rider", "Partner with Us", "Help Center", "Contact"] },
+            { title: "Product", links: ["What we deliver", "How it works", "Why Kaya"] },
+            { title: "Join", links: ["Customers", "Riders", "Vendors"] },
+            { title: "Company", links: ["Privacy", "hello@kayafast.com", "Accra · Kumasi"] },
           ].map((col, i) => (
             <div key={i}>
-              <div style={{ fontSize: ".7rem", fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 20 }}>{col.title}</div>
-              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 12 }}>
+              <div style={{ fontSize: ".68rem", fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 20 }}>{col.title}</div>
+              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 14 }}>
                 {col.links.map((l, j) => (
                   <li key={j}>
                     <a href="#" style={{ fontSize: ".88rem", color: "rgba(255,255,255,0.4)", textDecoration: "none", transition: "color .2s" }}
@@ -758,128 +785,29 @@ function Footer({ onWaitlist }) {
           ))}
         </div>
 
-        <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 28, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
-          <p style={{ fontSize: ".82rem", color: "rgba(255,255,255,0.2)" }}>© 2026 Kaya Technologies. All rights reserved.</p>
-          <div style={{ display: "flex", gap: 24 }}>
-            {[{ label: "Privacy", href: "/privacy-policy.html" }, { label: "Terms", href: "/terms-of-service.html" }].map((l, i) => (
-              <a key={i} href={l.href} style={{ fontSize: ".82rem", color: "rgba(255,255,255,0.3)", textDecoration: "none", transition: "color .2s" }}
-                onMouseEnter={e => e.target.style.color = WHITE}
-                onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.3)"}
-              >{l.label}</a>
-            ))}
-          </div>
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 28, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 0 }}>
+          <p style={{ fontSize: ".82rem", color: "rgba(255,255,255,0.2)" }}>© 2026 Kaya. Built in Ghana 🇬🇭.</p>
+          <p style={{ fontSize: ".82rem", color: "rgba(255,255,255,0.2)" }}>Powered by Paystack. Made with love for Accra &amp; Kumasi.</p>
         </div>
+
+        {/* Watermark */}
+        <div style={{
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontSize: mob ? "18vw" : "13vw", fontWeight: 900,
+          color: "rgba(255,255,255,0.04)", lineHeight: 1,
+          letterSpacing: "-4px", marginTop: -8,
+          userSelect: "none", pointerEvents: "none",
+          overflow: "hidden",
+        }}>KAYA</div>
       </div>
     </footer>
   );
 }
 
-// ── Waitlist Modal (unchanged logic) ──────────────────────────────────────────
+// ── Waitlist Modal ─────────────────────────────────────────────────────────────
 const DIAL_CODES = {
   "Algeria":"+213","Angola":"+244","Benin":"+229","Botswana":"+267","Burkina Faso":"+226","Burundi":"+257","Cabo Verde":"+238","Cameroon":"+237","Central African Republic":"+236","Chad":"+235","Comoros":"+269","Congo (Brazzaville)":"+242","Congo (DRC)":"+243","Djibouti":"+253","Egypt":"+20","Equatorial Guinea":"+240","Eritrea":"+291","Eswatini":"+268","Ethiopia":"+251","Gabon":"+241","Gambia":"+220","Ghana":"+233","Guinea":"+224","Guinea-Bissau":"+245","Ivory Coast":"+225","Kenya":"+254","Lesotho":"+266","Liberia":"+231","Libya":"+218","Madagascar":"+261","Malawi":"+265","Mali":"+223","Mauritania":"+222","Mauritius":"+230","Morocco":"+212","Mozambique":"+258","Namibia":"+264","Niger":"+227","Nigeria":"+234","Rwanda":"+250","São Tomé & Príncipe":"+239","Senegal":"+221","Seychelles":"+248","Sierra Leone":"+232","Somalia":"+252","South Africa":"+27","South Sudan":"+211","Sudan":"+249","Tanzania":"+255","Togo":"+228","Tunisia":"+216","Uganda":"+256","Zambia":"+260","Zimbabwe":"+263",
 };
-
-// ── Roles Section (DoorDash-style rows) ───────────────────────────────────────
-function RolesSection({ onWaitlist }) {
-  const [ref, vis] = useReveal();
-  const w = useWindowWidth();
-  const isMobile = w < 768;
-
-  const roles = [
-    {
-      emoji: "🛍️",
-      title: "Order anything,\ndelivered fast",
-      desc: "Browse local restaurants, grocery stores, pharmacies and retail shops. Get everything delivered to your door in under 30 minutes.",
-      cta: "Join the waitlist →",
-      // Replace emoji div below with: <img src="your-svg.svg" ... />
-    },
-    {
-      emoji: "🏪",
-      title: "Grow your\nbusiness",
-      desc: "Reach thousands of new customers across your city. List your store on Kaya and start receiving orders — zero commission for your first 30 days.",
-      cta: "Partner with Kaya →",
-    },
-    {
-      emoji: "🛵",
-      title: "Earn on\nyour terms",
-      desc: "Set your own hours, choose your delivery zone and earn competitive pay per delivery. Sign up in minutes and start making money with Kaya.",
-      cta: "Become a rider →",
-    },
-  ];
-
-  return (
-    <section style={{ background: WHITE, padding: isMobile ? "56px 20px" : "100px 48px" }}>
-      <div style={{ maxWidth: 780, margin: "0 auto" }}>
-        <div ref={ref} style={{
-          opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(24px)",
-          transition: "opacity 0.7s, transform 0.7s",
-        }}>
-          {roles.map((r, i) => (
-            <div key={i} style={{
-              display: "flex", alignItems: "flex-start", gap: isMobile ? 20 : 36,
-              paddingBottom: i < roles.length - 1 ? (isMobile ? 40 : 56) : 0,
-              marginBottom: i < roles.length - 1 ? (isMobile ? 40 : 56) : 0,
-              borderBottom: i < roles.length - 1 ? `1px solid ${BORDER}` : "none",
-              opacity: vis ? 1 : 0,
-              transform: vis ? "none" : "translateY(20px)",
-              transition: `opacity 0.6s ${i * 0.15}s, transform 0.6s ${i * 0.15}s`,
-            }}>
-              {/* Illustration — swap this div for your SVG art */}
-              <div style={{
-                width: isMobile ? 88 : 120,
-                height: isMobile ? 88 : 120,
-                borderRadius: "50%",
-                background: SOFT,
-                border: `2px solid ${BORDER}`,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: isMobile ? "2rem" : "2.8rem",
-                flexShrink: 0,
-              }}>
-                {r.emoji}
-              </div>
-
-              {/* Content */}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <h3 style={{
-                  fontSize: isMobile ? "1.5rem" : "2rem",
-                  fontWeight: 900,
-                  color: DARK,
-                  lineHeight: 1.15,
-                  letterSpacing: "-0.5px",
-                  marginBottom: 10,
-                  whiteSpace: "pre-line",
-                }}>
-                  {r.title}
-                </h3>
-                <p style={{
-                  fontSize: isMobile ? ".88rem" : ".98rem",
-                  color: MUTED,
-                  lineHeight: 1.75,
-                  marginBottom: 14,
-                }}>
-                  {r.desc}
-                </p>
-                <button onClick={onWaitlist} style={{
-                  background: "none", border: "none", padding: 0,
-                  color: GREEN, fontWeight: 700,
-                  fontSize: isMobile ? ".88rem" : ".95rem",
-                  fontFamily: "Inter, sans-serif", cursor: "pointer",
-                  display: "flex", alignItems: "center", gap: 4,
-                  transition: "opacity .2s",
-                }}
-                  onMouseEnter={e => e.currentTarget.style.opacity = 0.7}
-                  onMouseLeave={e => e.currentTarget.style.opacity = 1}
-                >
-                  {r.cta}
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function WaitlistModal({ open, onClose }) {
   const [form, setForm] = useState({ name: "", city: "", country: "", phone: "", email: "" });
@@ -887,8 +815,8 @@ function WaitlistModal({ open, onClose }) {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [focus, setFocus] = useState("");
-  const w = useWindowWidth();
-  const isMobile = w < 640;
+  const w = useW();
+  const mob = w < 640;
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -925,120 +853,101 @@ function WaitlistModal({ open, onClose }) {
 
   if (!open) return null;
 
-  const inputStyle = (key) => ({
+  const inp = (key) => ({
     width: "100%", padding: "13px 16px",
-    background: focus === key ? SOFT : "#f9fafb",
-    border: `1.5px solid ${errors[key] ? "#e53e3e" : focus === key ? GREEN : BORDER}`,
+    background: focus === key ? "rgba(27,58,42,0.04)" : "#f9f9f7",
+    border: `1.5px solid ${errors[key] ? "#e53e3e" : focus === key ? DARK : "rgba(27,58,42,0.15)"}`,
     borderRadius: 12, color: TEXT, fontSize: ".95rem",
-    fontFamily: "Inter, sans-serif", outline: "none",
+    fontFamily: "'Inter', sans-serif", outline: "none",
     transition: "border-color .2s, background .2s",
   });
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 99999, display: "flex", alignItems: isMobile ? "flex-end" : "center", justifyContent: "center", padding: isMobile ? 0 : 16, background: "rgba(28,46,28,0.6)", backdropFilter: "blur(16px)" }}
+    <div style={{ position: "fixed", inset: 0, zIndex: 99999, display: "flex", alignItems: mob ? "flex-end" : "center", justifyContent: "center", padding: mob ? 0 : 16, background: "rgba(27,58,42,0.65)", backdropFilter: "blur(16px)" }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <div style={{
-        background: WHITE,
-        borderRadius: isMobile ? "24px 24px 0 0" : 28,
-        padding: isMobile ? "28px 20px 32px" : "48px 44px",
-        maxWidth: isMobile ? "100%" : 500,
-        width: "100%",
-        boxShadow: "0 40px 120px rgba(0,0,0,0.2)",
-        position: "relative",
-        maxHeight: isMobile ? "92svh" : "90svh",
-        overflowY: "auto",
-        animation: isMobile ? "fadeUp .35s ease" : "fadeUp .4s ease",
+        background: WHITE, borderRadius: mob ? "24px 24px 0 0" : 28,
+        padding: mob ? "28px 20px 36px" : "48px 44px",
+        maxWidth: mob ? "100%" : 500, width: "100%",
+        boxShadow: "0 40px 120px rgba(0,0,0,0.25)",
+        position: "relative", maxHeight: "92svh", overflowY: "auto",
+        animation: "fadeUp .35s ease",
       }}>
         <button onClick={onClose} style={{
-          position: "absolute", top: 18, right: 18,
-          background: SOFT, border: "none", color: MUTED,
+          position: "absolute", top: 16, right: 16,
+          background: "rgba(27,58,42,0.07)", border: "none", color: MUTED,
           borderRadius: "50%", width: 34, height: 34, cursor: "pointer",
           fontSize: "1rem", display: "flex", alignItems: "center", justifyContent: "center",
-          transition: "background .2s",
-        }}
-          onMouseEnter={e => e.target.style.background = BORDER}
-          onMouseLeave={e => e.target.style.background = SOFT}
-        >✕</button>
+        }}>✕</button>
 
         {submitted ? (
-          <div style={{ textAlign: "center", padding: "20px 0" }}>
-            <div style={{ width: 64, height: 64, background: SOFT, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "1.8rem" }}>🎉</div>
-            <h3 style={{ fontSize: "1.8rem", fontWeight: 900, color: DARK, marginBottom: 12, letterSpacing: "-0.5px" }}>You're on the list!</h3>
+          <div style={{ textAlign: "center", padding: "16px 0" }}>
+            <div style={{ width: 64, height: 64, background: "rgba(27,58,42,0.08)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "1.8rem" }}>🎉</div>
+            <h3 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: "1.8rem", fontWeight: 900, color: DARK, marginBottom: 12, letterSpacing: "-0.5px" }}>You're on the list!</h3>
             <p style={{ color: MUTED, lineHeight: 1.7, marginBottom: 24 }}>
-              Thanks {form.name.split(" ")[0]}! We'll reach out to <strong style={{ color: DARK }}>{form.email}</strong> when Kaya launches in <strong>{form.city}</strong>.
+              Thanks {form.name.split(" ")[0]}! We'll reach out to <strong style={{ color: TEXT }}>{form.email}</strong> when Kaya launches in <strong>{form.city}</strong>.
             </p>
-            <div style={{ background: SOFT, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "14px 18px" }}>
+            <div style={{ background: "rgba(27,58,42,0.06)", border: "1px solid rgba(27,58,42,0.12)", borderRadius: 12, padding: "14px 18px" }}>
               <p style={{ fontSize: ".85rem", color: DARK, fontWeight: 600 }}>📱 Watch your inbox for your exclusive early access invite.</p>
             </div>
           </div>
         ) : (
           <>
             <div style={{ marginBottom: 28 }}>
-              <div style={{ display: "inline-block", background: SOFT, border: `1px solid ${BORDER}`, borderRadius: 999, padding: "4px 12px", marginBottom: 14 }}>
-                <span style={{ fontSize: ".72rem", fontWeight: 700, color: GREEN, letterSpacing: ".08em", textTransform: "uppercase" }}>Early access</span>
-              </div>
-              <h3 style={{ fontSize: "1.7rem", fontWeight: 900, color: DARK, marginBottom: 8, letterSpacing: "-0.5px" }}>Join the Kaya waitlist</h3>
+              <p style={{ fontSize: ".7rem", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", color: TERRA, marginBottom: 10 }}>Early access</p>
+              <h3 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: "1.7rem", fontWeight: 900, color: DARK, marginBottom: 8, letterSpacing: "-0.5px" }}>Join the Kaya waitlist</h3>
               <p style={{ color: MUTED, fontSize: ".92rem", lineHeight: 1.65 }}>Be among the first to experience delivery reimagined.</p>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <div>
-                <label style={{ fontSize: ".75rem", fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>Full Name</label>
-                <input value={form.name} onChange={handle("name")} placeholder="Richmond Sarpong" style={inputStyle("name")} onFocus={() => setFocus("name")} onBlur={() => setFocus("")} />
+                <label style={{ fontSize: ".73rem", fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>Full Name</label>
+                <input value={form.name} onChange={handle("name")} placeholder="Richmond Sarpong" style={inp("name")} onFocus={() => setFocus("name")} onBlur={() => setFocus("")} />
                 {errors.name && <p style={{ color: "#e53e3e", fontSize: ".78rem", marginTop: 4 }}>{errors.name}</p>}
               </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12 }}>
+              <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 12 }}>
                 <div>
-                  <label style={{ fontSize: ".75rem", fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>City</label>
-                  <input value={form.city} onChange={handle("city")} placeholder="Accra" style={inputStyle("city")} onFocus={() => setFocus("city")} onBlur={() => setFocus("")} />
+                  <label style={{ fontSize: ".73rem", fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>City</label>
+                  <input value={form.city} onChange={handle("city")} placeholder="Accra" style={inp("city")} onFocus={() => setFocus("city")} onBlur={() => setFocus("")} />
                   {errors.city && <p style={{ color: "#e53e3e", fontSize: ".78rem", marginTop: 4 }}>{errors.city}</p>}
                 </div>
                 <div>
-                  <label style={{ fontSize: ".75rem", fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>Country</label>
+                  <label style={{ fontSize: ".73rem", fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>Country</label>
                   <select value={form.country} onChange={handle("country")} onFocus={() => setFocus("country")} onBlur={() => setFocus("")}
-                    style={{ ...inputStyle("country"), appearance: "none", WebkitAppearance: "none" }}>
+                    style={{ ...inp("country"), appearance: "none" }}>
                     <option value="" disabled>Select country</option>
                     {Object.keys(DIAL_CODES).map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                   {errors.country && <p style={{ color: "#e53e3e", fontSize: ".78rem", marginTop: 4 }}>{errors.country}</p>}
                 </div>
               </div>
-
               <div>
-                <label style={{ fontSize: ".75rem", fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>Phone</label>
+                <label style={{ fontSize: ".73rem", fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>Phone</label>
                 <div style={{ display: "flex", gap: 8 }}>
                   {form.country && DIAL_CODES[form.country] && (
-                    <div style={{
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      padding: "0 14px", borderRadius: 12, fontWeight: 700, fontSize: ".9rem",
-                      background: SOFT, border: `1.5px solid ${BORDER}`,
-                      color: DARK, whiteSpace: "nowrap", flexShrink: 0,
-                    }}>{DIAL_CODES[form.country]}</div>
+                    <div style={{ display: "flex", alignItems: "center", padding: "0 14px", borderRadius: 12, fontWeight: 700, fontSize: ".9rem", background: "rgba(27,58,42,0.07)", border: "1.5px solid rgba(27,58,42,0.15)", color: DARK, whiteSpace: "nowrap", flexShrink: 0 }}>{DIAL_CODES[form.country]}</div>
                   )}
-                  <input value={form.phone} onChange={handle("phone")} type="tel" placeholder="XX XXX XXXX" style={{ ...inputStyle("phone"), flex: 1 }} onFocus={() => setFocus("phone")} onBlur={() => setFocus("")} />
+                  <input value={form.phone} onChange={handle("phone")} type="tel" placeholder="XX XXX XXXX" style={{ ...inp("phone"), flex: 1 }} onFocus={() => setFocus("phone")} onBlur={() => setFocus("")} />
                 </div>
                 {errors.phone && <p style={{ color: "#e53e3e", fontSize: ".78rem", marginTop: 4 }}>{errors.phone}</p>}
               </div>
-
               <div>
-                <label style={{ fontSize: ".75rem", fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>Email</label>
-                <input value={form.email} onChange={handle("email")} type="email" placeholder="you@example.com" style={inputStyle("email")} onFocus={() => setFocus("email")} onBlur={() => setFocus("")} />
+                <label style={{ fontSize: ".73rem", fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>Email</label>
+                <input value={form.email} onChange={handle("email")} type="email" placeholder="you@example.com" style={inp("email")} onFocus={() => setFocus("email")} onBlur={() => setFocus("")} />
                 {errors.email && <p style={{ color: "#e53e3e", fontSize: ".78rem", marginTop: 4 }}>{errors.email}</p>}
               </div>
-
               <button onClick={submit} disabled={loading} style={{
-                marginTop: 4, background: loading ? `${DARK}aa` : DARK, color: WHITE,
-                border: "none", borderRadius: 14, padding: "15px", fontWeight: 800, fontSize: ".95rem",
-                fontFamily: "Inter, sans-serif", cursor: loading ? "default" : "pointer",
+                marginTop: 4, background: loading ? `${DARK}99` : DARK, color: WHITE,
+                border: "none", borderRadius: 14, padding: "15px",
+                fontWeight: 900, fontSize: ".95rem",
+                fontFamily: "'Plus Jakarta Sans',sans-serif",
+                cursor: loading ? "default" : "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-                transition: "opacity .2s",
               }}>
-                {loading ? (
-                  <><div style={{ width: 18, height: 18, border: "2.5px solid rgba(255,255,255,0.3)", borderTopColor: WHITE, borderRadius: "50%", animation: "spin .8s linear infinite" }} /> Securing your spot…</>
-                ) : "Get Early Access →"}
+                {loading
+                  ? <><div style={{ width: 18, height: 18, border: "2.5px solid rgba(255,255,255,0.3)", borderTopColor: WHITE, borderRadius: "50%", animation: "spin .8s linear infinite" }} /> Securing your spot…</>
+                  : "Get Early Access →"}
               </button>
-
               <p style={{ textAlign: "center", fontSize: ".78rem", color: MUTED }}>No spam, ever. Only your Kaya invite.</p>
             </div>
           </>
@@ -1048,25 +957,25 @@ function WaitlistModal({ open, onClose }) {
   );
 }
 
-// ── Cookie notice ──────────────────────────────────────────────────────────────
+// ── Cookie ─────────────────────────────────────────────────────────────────────
 function CookieNotice() {
-  const [visible, setVisible] = useState(() => !localStorage.getItem("kaya_cookie_ok"));
-  if (!visible) return null;
+  const [vis, setVis] = useState(() => !localStorage.getItem("kaya_cookie_ok"));
+  if (!vis) return null;
   return (
     <div style={{
       position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 99998,
-      background: WHITE, borderTop: `1px solid ${BORDER}`,
+      background: WHITE, borderTop: `1px solid rgba(27,58,42,0.1)`,
       padding: "14px 24px", display: "flex", alignItems: "center",
       justifyContent: "center", gap: 20, flexWrap: "wrap",
     }}>
       <p style={{ fontSize: ".85rem", color: MUTED, margin: 0, maxWidth: 680 }}>
-        We use cookies to keep the site working and analyse usage. By continuing, you agree to our{" "}
+        We use cookies to keep the site working. By continuing you agree to our{" "}
         <a href="/privacy-policy.html" style={{ color: DARK, textDecoration: "underline" }}>Privacy Policy</a>.
       </p>
-      <button onClick={() => { localStorage.setItem("kaya_cookie_ok", "1"); setVisible(false); }} style={{
+      <button onClick={() => { localStorage.setItem("kaya_cookie_ok", "1"); setVis(false); }} style={{
         background: DARK, color: WHITE, border: "none", borderRadius: 999,
         padding: "9px 22px", fontWeight: 700, fontSize: ".85rem",
-        fontFamily: "Inter, sans-serif", cursor: "pointer", whiteSpace: "nowrap",
+        fontFamily: "'Plus Jakarta Sans',sans-serif", cursor: "pointer",
       }}>Got it</button>
     </div>
   );
@@ -1074,23 +983,23 @@ function CookieNotice() {
 
 // ── App ────────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [modalOpen, setModalOpen] = useState(false);
-  const openWaitlist = () => setModalOpen(true);
+  const [open, setOpen] = useState(false);
+  const show = () => setOpen(true);
 
   return (
     <>
       <style>{styles}</style>
-      <Navbar onWaitlist={openWaitlist} />
-      <Hero onWaitlist={openWaitlist} />
-      <StatsBar />
-      <Categories onWaitlist={openWaitlist} />
+      <Navbar onWaitlist={show} />
+      <Hero onWaitlist={show} />
+      <Ticker />
+      <Categories onWaitlist={show} />
       <HowItWorks />
       <WhyKaya />
-      <Partners onWaitlist={openWaitlist} />
-      <WaitlistCTA onWaitlist={openWaitlist} />
-      <RolesSection onWaitlist={openWaitlist} />
-      <Footer onWaitlist={openWaitlist} />
-      <WaitlistModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      <Stats />
+      <Partners onWaitlist={show} />
+      <WaitlistCTA onWaitlist={show} />
+      <Footer onWaitlist={show} />
+      <WaitlistModal open={open} onClose={() => setOpen(false)} />
       <CookieNotice />
     </>
   );
