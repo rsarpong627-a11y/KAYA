@@ -591,65 +591,59 @@ function Partners({ onWaitlist }) {
   const w = useW();
   const mob = w < 768;
 
-  return (
-    <section style={{ background: CREAM, padding: mob ? "0 20px 64px" : "0 48px 100px" }}>
-      <div ref={ref} style={{
-        maxWidth: 1280, margin: "0 auto",
-        display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr",
-        gap: 10,
-        opacity: vis ? 1 : 0, transition: "opacity .7s",
-      }}>
-        {/* Riders */}
-        <div style={{ borderRadius: 20, overflow: "hidden", position: "relative", minHeight: mob ? 400 : 500, background: "#EEF5E8", display: "flex", flexDirection: "column" }}>
-          <div style={{ position: "absolute", top: 20, left: 20, zIndex: 2 }}>
-            <span style={{ border: `1.5px solid rgba(27,58,42,0.3)`, color: DARK, borderRadius: 999, padding: "5px 14px", fontSize: ".72rem", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", background: WHITE }}>Riders</span>
-          </div>
-          <img src="/In no time-amico.svg" alt="Rider" style={{ width: "100%", flex: 1, objectFit: "contain", objectPosition: "center", padding: "60px 24px 0" }} />
-          <div style={{ padding: mob ? "20px 24px 28px" : "20px 32px 36px", zIndex: 2 }}>
-            <h3 style={{
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontSize: mob ? "1.8rem" : "2.2rem", fontWeight: 900,
-              color: DARK, lineHeight: 1.1, letterSpacing: "-1px", marginBottom: 10,
-            }}>
-              Deliver with <em style={{ fontStyle: "normal", color: GOLD }}>Kaya.</em>
-            </h3>
-            <p style={{ color: MUTED, fontSize: ".92rem", lineHeight: 1.7, marginBottom: 22 }}>
-              Set your own hours. Earn on your terms. Deliver food, groceries and more across your city.
-            </p>
-            <button onClick={onWaitlist} style={{
-              background: GOLD, color: DARK, border: "none", borderRadius: 999,
-              padding: "13px 28px", fontWeight: 800, fontSize: ".9rem",
-              fontFamily: "'Plus Jakarta Sans', sans-serif", cursor: "pointer",
-              display: "inline-flex", alignItems: "center", gap: 8,
-            }}>Become a rider →</button>
-          </div>
-        </div>
+  const cards = [
+    {
+      img: "/rider-illustration.svg",
+      alt: "Rider illustration",
+      title: "Deliver with Kaya",
+      desc: "Set your own hours. Earn on your terms. Deliver food, groceries and more across your city. Sign up in minutes.",
+      cta: "Start earning →",
+      ctaColor: GOLD,
+    },
+    {
+      img: "/vendor-illustration.svg",
+      alt: "Vendor illustration",
+      title: "Grow your business",
+      desc: "Attract new customers and grow your sales, starting with 0% commission for your first 30 days. No hidden fees.",
+      cta: "Partner with Kaya →",
+      ctaColor: TERRA,
+    },
+  ];
 
-        {/* Vendors */}
-        <div style={{ borderRadius: 20, overflow: "hidden", position: "relative", minHeight: mob ? 400 : 500, background: "#FFF5F0", display: "flex", flexDirection: "column" }}>
-          <div style={{ position: "absolute", top: 20, left: 20, zIndex: 2 }}>
-            <span style={{ border: `1.5px solid rgba(27,58,42,0.3)`, color: DARK, borderRadius: 999, padding: "5px 14px", fontSize: ".72rem", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", background: WHITE }}>Vendors</span>
-          </div>
-          <img src="/Farmers market-cuate (1).svg" alt="Vendor" style={{ width: "100%", flex: 1, objectFit: "contain", objectPosition: "center", padding: "60px 24px 0" }} />
-          <div style={{ padding: mob ? "20px 24px 28px" : "20px 32px 36px", zIndex: 2 }}>
+  return (
+    <section style={{ background: CREAM, padding: mob ? "64px 20px" : "100px 48px" }}>
+      <div ref={ref} style={{
+        maxWidth: 900, margin: "0 auto",
+        display: "grid",
+        gridTemplateColumns: mob ? "1fr" : "1fr 1fr",
+        gap: mob ? 56 : 64,
+        opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(24px)",
+        transition: "opacity .7s, transform .7s",
+      }}>
+        {cards.map((c, i) => (
+          <div key={i} style={{ textAlign: "center" }}>
+            <div style={{ width: mob ? 180 : 220, height: mob ? 180 : 220, margin: "0 auto 28px" }}>
+              <img src={c.img} alt={c.alt} style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
+            </div>
             <h3 style={{
               fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontSize: mob ? "1.8rem" : "2.2rem", fontWeight: 900,
-              color: DARK, lineHeight: 1.1, letterSpacing: "-1px", marginBottom: 10,
-            }}>
-              Grow your <em style={{ fontStyle: "normal", color: TERRA }}>business.</em>
-            </h3>
-            <p style={{ color: MUTED, fontSize: ".92rem", lineHeight: 1.7, marginBottom: 22 }}>
-              Reach new customers across your city. Zero commission for 30 days. No hidden fees.
-            </p>
+              fontSize: mob ? "1.8rem" : "2rem",
+              fontWeight: 900, color: DARK,
+              lineHeight: 1.15, letterSpacing: "-1px", marginBottom: 14,
+            }}>{c.title}</h3>
+            <p style={{
+              fontSize: ".95rem", color: MUTED,
+              lineHeight: 1.75, marginBottom: 20,
+              maxWidth: 340, margin: "0 auto 20px",
+            }}>{c.desc}</p>
             <button onClick={onWaitlist} style={{
-              background: DARK, color: WHITE, border: "none", borderRadius: 999,
-              padding: "13px 28px", fontWeight: 800, fontSize: ".9rem",
-              fontFamily: "'Plus Jakarta Sans', sans-serif", cursor: "pointer",
-              display: "inline-flex", alignItems: "center", gap: 8,
-            }}>Partner with Kaya →</button>
+              background: "none", border: "none", padding: 0,
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontWeight: 800, fontSize: "1rem",
+              color: c.ctaColor, cursor: "pointer",
+            }}>{c.cta}</button>
           </div>
-        </div>
+        ))}
       </div>
     </section>
   );
