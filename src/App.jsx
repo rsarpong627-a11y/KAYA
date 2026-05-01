@@ -600,55 +600,53 @@ function Partners({ onWaitlist }) {
         opacity: vis ? 1 : 0, transition: "opacity .7s",
       }}>
         {/* Riders */}
-        <div style={{ borderRadius: 20, overflow: "hidden", position: "relative", minHeight: mob ? 340 : 460 }}>
-          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" alt="Rider" style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(27,58,42,0.92) 0%, rgba(27,58,42,0.3) 60%)" }} />
-          <div style={{ position: "absolute", top: 20, left: 20 }}>
-            <span style={{ border: `1.5px solid rgba(255,255,255,0.5)`, color: WHITE, borderRadius: 999, padding: "5px 14px", fontSize: ".72rem", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase" }}>Riders</span>
+        <div style={{ borderRadius: 20, overflow: "hidden", position: "relative", minHeight: mob ? 400 : 500, background: "#EEF5E8", display: "flex", flexDirection: "column" }}>
+          <div style={{ position: "absolute", top: 20, left: 20, zIndex: 2 }}>
+            <span style={{ border: `1.5px solid rgba(27,58,42,0.3)`, color: DARK, borderRadius: 999, padding: "5px 14px", fontSize: ".72rem", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", background: WHITE }}>Riders</span>
           </div>
-          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: mob ? "24px" : "36px 32px" }}>
+          <img src="/In no time-amico.svg" alt="Rider" style={{ width: "100%", flex: 1, objectFit: "contain", objectPosition: "center", padding: "60px 24px 0" }} />
+          <div style={{ padding: mob ? "20px 24px 28px" : "20px 32px 36px", zIndex: 2 }}>
             <h3 style={{
               fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontSize: mob ? "1.8rem" : "2.6rem", fontWeight: 900,
-              color: WHITE, lineHeight: 1.1, letterSpacing: "-1px", marginBottom: 12,
+              fontSize: mob ? "1.8rem" : "2.2rem", fontWeight: 900,
+              color: DARK, lineHeight: 1.1, letterSpacing: "-1px", marginBottom: 10,
             }}>
               Deliver with <em style={{ fontStyle: "normal", color: GOLD }}>Kaya.</em>
             </h3>
-            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: ".92rem", lineHeight: 1.7, marginBottom: 24 }}>
+            <p style={{ color: MUTED, fontSize: ".92rem", lineHeight: 1.7, marginBottom: 22 }}>
               Set your own hours. Earn on your terms. Deliver food, groceries and more across your city.
             </p>
             <button onClick={onWaitlist} style={{
               background: GOLD, color: DARK, border: "none", borderRadius: 999,
               padding: "13px 28px", fontWeight: 800, fontSize: ".9rem",
               fontFamily: "'Plus Jakarta Sans', sans-serif", cursor: "pointer",
-              display: "flex", alignItems: "center", gap: 8,
+              display: "inline-flex", alignItems: "center", gap: 8,
             }}>Become a rider →</button>
           </div>
         </div>
 
         {/* Vendors */}
-        <div style={{ borderRadius: 20, overflow: "hidden", position: "relative", minHeight: mob ? 340 : 460 }}>
-          <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80" alt="Vendor" style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(27,58,42,0.92) 0%, rgba(27,58,42,0.3) 60%)" }} />
-          <div style={{ position: "absolute", top: 20, left: 20 }}>
-            <span style={{ border: `1.5px solid rgba(255,255,255,0.5)`, color: WHITE, borderRadius: 999, padding: "5px 14px", fontSize: ".72rem", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase" }}>Vendors</span>
+        <div style={{ borderRadius: 20, overflow: "hidden", position: "relative", minHeight: mob ? 400 : 500, background: "#FFF5F0", display: "flex", flexDirection: "column" }}>
+          <div style={{ position: "absolute", top: 20, left: 20, zIndex: 2 }}>
+            <span style={{ border: `1.5px solid rgba(27,58,42,0.3)`, color: DARK, borderRadius: 999, padding: "5px 14px", fontSize: ".72rem", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", background: WHITE }}>Vendors</span>
           </div>
-          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: mob ? "24px" : "36px 32px" }}>
+          <img src="/Farmers market-cuate (1).svg" alt="Vendor" style={{ width: "100%", flex: 1, objectFit: "contain", objectPosition: "center", padding: "60px 24px 0" }} />
+          <div style={{ padding: mob ? "20px 24px 28px" : "20px 32px 36px", zIndex: 2 }}>
             <h3 style={{
               fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontSize: mob ? "1.8rem" : "2.6rem", fontWeight: 900,
-              color: WHITE, lineHeight: 1.1, letterSpacing: "-1px", marginBottom: 12,
+              fontSize: mob ? "1.8rem" : "2.2rem", fontWeight: 900,
+              color: DARK, lineHeight: 1.1, letterSpacing: "-1px", marginBottom: 10,
             }}>
               Grow your <em style={{ fontStyle: "normal", color: TERRA }}>business.</em>
             </h3>
-            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: ".92rem", lineHeight: 1.7, marginBottom: 24 }}>
+            <p style={{ color: MUTED, fontSize: ".92rem", lineHeight: 1.7, marginBottom: 22 }}>
               Reach new customers across your city. Zero commission for 30 days. No hidden fees.
             </p>
             <button onClick={onWaitlist} style={{
-              background: WHITE, color: DARK, border: "none", borderRadius: 999,
+              background: DARK, color: WHITE, border: "none", borderRadius: 999,
               padding: "13px 28px", fontWeight: 800, fontSize: ".9rem",
               fontFamily: "'Plus Jakarta Sans', sans-serif", cursor: "pointer",
-              display: "flex", alignItems: "center", gap: 8,
+              display: "inline-flex", alignItems: "center", gap: 8,
             }}>Partner with Kaya →</button>
           </div>
         </div>
