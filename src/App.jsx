@@ -808,7 +808,7 @@ function WaitlistModal({ open, onClose }) {
   const [errors, setErrors] = useState({});
   const [focus, setFocus] = useState("");
   const w = useW();
-  const mob = w < 640;
+  const mob = w < 768;
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -817,11 +817,11 @@ function WaitlistModal({ open, onClose }) {
 
   const validate = () => {
     const e = {};
-    if (!form.name.trim()) e.name = "Please enter your name";
-    if (!form.city.trim()) e.city = "Please enter your city";
-    if (!form.country.trim()) e.country = "Please select your country";
-    if (!/^\+?[\d\s\-()]{7,}$/.test(form.phone)) e.phone = "Enter a valid phone number";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Enter a valid email address";
+    if (!form.name.trim()) e.name = "Required";
+    if (!form.city.trim()) e.city = "Required";
+    if (!form.country.trim()) e.country = "Required";
+    if (!/^\+?[\d\s\-()]{7,}$/.test(form.phone)) e.phone = "Invalid number";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Invalid email";
     return e;
   };
 
@@ -835,7 +835,7 @@ function WaitlistModal({ open, onClose }) {
     if (Object.keys(e).length) { setErrors(e); return; }
     setLoading(true);
     const { error } = await supabase.from("waitlist").insert([{ name: form.name, email: form.email, phone: form.phone, city: form.city, country: form.country }]);
-    if (error) { setLoading(false); setErrors({ email: "Something went wrong. Please try again." }); return; }
+    if (error) { setLoading(false); setErrors({ email: "Something went wrong. Try again." }); return; }
     await supabase.functions.invoke("send-waitlist-email", {
       body: { name: form.name, email: form.email, city: form.city, country: form.country },
     });
@@ -846,104 +846,224 @@ function WaitlistModal({ open, onClose }) {
   if (!open) return null;
 
   const inp = (key) => ({
-    width: "100%", padding: "13px 16px",
-    background: focus === key ? "rgba(27,58,42,0.04)" : "#f9f9f7",
-    border: `1.5px solid ${errors[key] ? "#e53e3e" : focus === key ? DARK : "rgba(27,58,42,0.15)"}`,
+    width: "100%", padding: "14px 16px",
+    background: WHITE,
+    border: `1.5px solid ${errors[key] ? "#e53e3e" : focus === key ? DARK : "rgba(27,58,42,0.18)"}`,
     borderRadius: 12, color: TEXT, fontSize: ".95rem",
     fontFamily: "'Inter', sans-serif", outline: "none",
-    transition: "border-color .2s, background .2s",
+    transition: "border-color .2s",
   });
 
-  return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 99999, display: "flex", alignItems: mob ? "flex-end" : "center", justifyContent: "center", padding: mob ? 0 : 16, background: "rgba(27,58,42,0.65)", backdropFilter: "blur(16px)" }}
-      onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
-      <div style={{
-        background: WHITE, borderRadius: mob ? "24px 24px 0 0" : 28,
-        padding: mob ? "28px 20px 36px" : "48px 44px",
-        maxWidth: mob ? "100%" : 500, width: "100%",
-        boxShadow: "0 40px 120px rgba(0,0,0,0.25)",
-        position: "relative", maxHeight: "92svh", overflowY: "auto",
-        animation: "fadeUp .35s ease",
-      }}>
-        <button onClick={onClose} style={{
-          position: "absolute", top: 16, right: 16,
-          background: "rgba(27,58,42,0.07)", border: "none", color: MUTED,
-          borderRadius: "50%", width: 34, height: 34, cursor: "pointer",
-          fontSize: "1rem", display: "flex", alignItems: "center", justifyContent: "center",
-        }}>✕</button>
+  const Label = ({ text }) => (
+    <label style={{ fontSize: ".72rem", fontWeight: 600, color: MUTED, letterSpacing: ".06em", display: "block", marginBottom: 6 }}>{text}</label>
+  );
 
-        {submitted ? (
-          <div style={{ textAlign: "center", padding: "16px 0" }}>
-            <div style={{ width: 64, height: 64, background: "rgba(27,58,42,0.08)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "1.8rem" }}>🎉</div>
-            <h3 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: "1.8rem", fontWeight: 900, color: DARK, marginBottom: 12, letterSpacing: "-0.5px" }}>You're on the list!</h3>
-            <p style={{ color: MUTED, lineHeight: 1.7, marginBottom: 24 }}>
-              Thanks {form.name.split(" ")[0]}! We'll reach out to <strong style={{ color: TEXT }}>{form.email}</strong> when Kaya launches in <strong>{form.city}</strong>.
-            </p>
-            <div style={{ background: "rgba(27,58,42,0.06)", border: "1px solid rgba(27,58,42,0.12)", borderRadius: 12, padding: "14px 18px" }}>
-              <p style={{ fontSize: ".85rem", color: DARK, fontWeight: 600 }}>📱 Watch your inbox for your exclusive early access invite.</p>
+  const Err = ({ k }) => errors[k] ? <p style={{ color: "#e53e3e", fontSize: ".74rem", marginTop: 4 }}>{errors[k]}</p> : null;
+
+  return (
+    <div style={{
+      position: "fixed", inset: 0, zIndex: 99999,
+      background: "rgba(10,20,12,0.7)", backdropFilter: "blur(12px)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      padding: mob ? 0 : 24, overflow: "auto",
+    }}
+      onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+
+      {/* Full-screen card */}
+      <div style={{
+        background: CREAM,
+        borderRadius: mob ? "24px 24px 0 0" : 28,
+        width: "100%", maxWidth: mob ? "100%" : 960,
+        maxHeight: mob ? "95svh" : "90svh",
+        overflowY: "auto",
+        display: "grid",
+        gridTemplateColumns: mob ? "1fr" : "1fr 1fr",
+        boxShadow: "0 48px 120px rgba(0,0,0,0.3)",
+        animation: "fadeUp .4s ease",
+        marginTop: mob ? "auto" : 0,
+        position: "relative",
+      }}>
+
+        {/* ── Left panel — brand ─────────────────────────── */}
+        {!mob && (
+          <div style={{
+            background: DARK, borderRadius: "28px 0 0 28px",
+            padding: "48px 40px", display: "flex", flexDirection: "column",
+            justifyContent: "space-between", position: "relative", overflow: "hidden",
+          }}>
+            {/* Decorative grid lines */}
+            <div style={{
+              position: "absolute", inset: 0, opacity: 0.06,
+              backgroundImage: `repeating-linear-gradient(0deg, ${WHITE} 0px, ${WHITE} 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, ${WHITE} 0px, ${WHITE} 1px, transparent 1px, transparent 40px)`,
+            }} />
+
+            <div style={{ position: "relative", zIndex: 1 }}>
+              {/* Barcode decoration */}
+              <div style={{ display: "flex", gap: 2, marginBottom: 32, opacity: 0.4 }}>
+                {[3,1,4,1,5,2,3,1,2,4,1,3,2,1,4,2,3,1,4,2,1,3,4,1,2].map((h, i) => (
+                  <div key={i} style={{ width: 2, height: h * 5, background: WHITE, borderRadius: 1 }} />
+                ))}
+              </div>
+
+              <img src="/kaya-logo.png" alt="Kaya" style={{ height: 36, objectFit: "contain", filter: "brightness(0) invert(1)", marginBottom: 28 }} />
+
+              <h2 style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontSize: "2rem", fontWeight: 900, color: WHITE,
+                lineHeight: 1.15, letterSpacing: "-1px", marginBottom: 16,
+              }}>
+                Join our<br />waitlist
+              </h2>
+              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: ".9rem", lineHeight: 1.75, maxWidth: 260 }}>
+                Be the first to experience Kaya when we launch in Kumasi &amp; Accra. Early access includes launch-day perks and founder pricing.
+              </p>
+            </div>
+
+            {/* Floating delivery card */}
+            <div style={{ position: "relative", zIndex: 1 }}>
+              <div style={{
+                background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: 16, padding: "16px 20px", marginBottom: 20,
+                display: "flex", alignItems: "center", gap: 14,
+              }}>
+                <div style={{ width: 44, height: 44, borderRadius: "50%", background: GOLD, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", flexShrink: 0 }}>📡</div>
+                <div>
+                  <div style={{ fontSize: ".72rem", color: "rgba(255,255,255,0.45)", fontWeight: 600, textTransform: "uppercase", letterSpacing: ".06em", marginBottom: 3 }}>Arriving in</div>
+                  <div style={{ fontSize: "1.1rem", color: WHITE, fontWeight: 900 }}>22 minutes</div>
+                </div>
+              </div>
+
+              {/* Trust badges */}
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                {["🔒 Secure", "🇬🇭 Ghana-built", "⚡ 30-min delivery"].map(t => (
+                  <span key={t} style={{
+                    background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 999, padding: "5px 12px",
+                    fontSize: ".74rem", color: "rgba(255,255,255,0.55)", fontWeight: 600,
+                  }}>{t}</span>
+                ))}
+              </div>
             </div>
           </div>
-        ) : (
-          <>
-            <div style={{ marginBottom: 28 }}>
-              <p style={{ fontSize: ".7rem", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", color: TERRA, marginBottom: 10 }}>Early access</p>
-              <h3 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: "1.7rem", fontWeight: 900, color: DARK, marginBottom: 8, letterSpacing: "-0.5px" }}>Join the Kaya waitlist</h3>
-              <p style={{ color: MUTED, fontSize: ".92rem", lineHeight: 1.65 }}>Be among the first to experience delivery reimagined.</p>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <div>
-                <label style={{ fontSize: ".73rem", fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>Full Name</label>
-                <input value={form.name} onChange={handle("name")} placeholder="Richmond Sarpong" style={inp("name")} onFocus={() => setFocus("name")} onBlur={() => setFocus("")} />
-                {errors.name && <p style={{ color: "#e53e3e", fontSize: ".78rem", marginTop: 4 }}>{errors.name}</p>}
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 12 }}>
-                <div>
-                  <label style={{ fontSize: ".73rem", fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>City</label>
-                  <input value={form.city} onChange={handle("city")} placeholder="Accra" style={inp("city")} onFocus={() => setFocus("city")} onBlur={() => setFocus("")} />
-                  {errors.city && <p style={{ color: "#e53e3e", fontSize: ".78rem", marginTop: 4 }}>{errors.city}</p>}
-                </div>
-                <div>
-                  <label style={{ fontSize: ".73rem", fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>Country</label>
-                  <select value={form.country} onChange={handle("country")} onFocus={() => setFocus("country")} onBlur={() => setFocus("")}
-                    style={{ ...inp("country"), appearance: "none" }}>
-                    <option value="" disabled>Select country</option>
-                    {Object.keys(DIAL_CODES).map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                  {errors.country && <p style={{ color: "#e53e3e", fontSize: ".78rem", marginTop: 4 }}>{errors.country}</p>}
-                </div>
-              </div>
-              <div>
-                <label style={{ fontSize: ".73rem", fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>Phone</label>
-                <div style={{ display: "flex", gap: 8 }}>
-                  {form.country && DIAL_CODES[form.country] && (
-                    <div style={{ display: "flex", alignItems: "center", padding: "0 14px", borderRadius: 12, fontWeight: 700, fontSize: ".9rem", background: "rgba(27,58,42,0.07)", border: "1.5px solid rgba(27,58,42,0.15)", color: DARK, whiteSpace: "nowrap", flexShrink: 0 }}>{DIAL_CODES[form.country]}</div>
-                  )}
-                  <input value={form.phone} onChange={handle("phone")} type="tel" placeholder="XX XXX XXXX" style={{ ...inp("phone"), flex: 1 }} onFocus={() => setFocus("phone")} onBlur={() => setFocus("")} />
-                </div>
-                {errors.phone && <p style={{ color: "#e53e3e", fontSize: ".78rem", marginTop: 4 }}>{errors.phone}</p>}
-              </div>
-              <div>
-                <label style={{ fontSize: ".73rem", fontWeight: 600, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>Email</label>
-                <input value={form.email} onChange={handle("email")} type="email" placeholder="you@example.com" style={inp("email")} onFocus={() => setFocus("email")} onBlur={() => setFocus("")} />
-                {errors.email && <p style={{ color: "#e53e3e", fontSize: ".78rem", marginTop: 4 }}>{errors.email}</p>}
-              </div>
-              <button onClick={submit} disabled={loading} style={{
-                marginTop: 4, background: loading ? `${DARK}99` : DARK, color: WHITE,
-                border: "none", borderRadius: 14, padding: "15px",
-                fontWeight: 900, fontSize: ".95rem",
-                fontFamily: "'Plus Jakarta Sans',sans-serif",
-                cursor: loading ? "default" : "pointer",
-                display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-              }}>
-                {loading
-                  ? <><div style={{ width: 18, height: 18, border: "2.5px solid rgba(255,255,255,0.3)", borderTopColor: WHITE, borderRadius: "50%", animation: "spin .8s linear infinite" }} /> Securing your spot…</>
-                  : "Get Early Access →"}
-              </button>
-              <p style={{ textAlign: "center", fontSize: ".78rem", color: MUTED }}>No spam, ever. Only your Kaya invite.</p>
-            </div>
-          </>
         )}
+
+        {/* ── Right panel — form ─────────────────────────── */}
+        <div style={{ padding: mob ? "32px 20px 40px" : "48px 44px", position: "relative" }}>
+
+          {/* Close */}
+          <button onClick={onClose} style={{
+            position: "absolute", top: 18, right: 18,
+            background: "rgba(27,58,42,0.08)", border: "none", color: MUTED,
+            borderRadius: "50%", width: 36, height: 36, cursor: "pointer",
+            fontSize: "1rem", display: "flex", alignItems: "center", justifyContent: "center",
+          }}>✕</button>
+
+          {submitted ? (
+            <div style={{ textAlign: "center", padding: "40px 0" }}>
+              <div style={{ fontSize: "3.5rem", marginBottom: 20 }}>🎉</div>
+              <h3 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: "2rem", fontWeight: 900, color: DARK, marginBottom: 14, letterSpacing: "-0.5px" }}>
+                You're on the list!
+              </h3>
+              <p style={{ color: MUTED, lineHeight: 1.8, marginBottom: 28, fontSize: ".95rem" }}>
+                Thanks <strong style={{ color: TEXT }}>{form.name.split(" ")[0]}</strong>! We'll reach out to{" "}
+                <strong style={{ color: TEXT }}>{form.email}</strong> when Kaya launches in <strong>{form.city}</strong>.
+              </p>
+              <div style={{ background: "rgba(27,58,42,0.06)", border: `1px solid rgba(27,58,42,0.12)`, borderRadius: 14, padding: "16px 20px" }}>
+                <p style={{ fontSize: ".88rem", color: DARK, fontWeight: 700 }}>📱 Check your inbox for your exclusive early access invite.</p>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Mobile logo */}
+              {mob && <img src="/kaya-logo.png" alt="Kaya" style={{ height: 30, objectFit: "contain", marginBottom: 24 }} />}
+
+              <h3 style={{
+                fontFamily: "'Plus Jakarta Sans',sans-serif",
+                fontSize: mob ? "1.8rem" : "2rem", fontWeight: 900,
+                color: DARK, marginBottom: 8, letterSpacing: "-0.8px", lineHeight: 1.1,
+                paddingRight: 40,
+              }}>Join the waitlist</h3>
+              <p style={{ color: MUTED, fontSize: ".9rem", lineHeight: 1.65, marginBottom: 32 }}>
+                No strings attached. Reserve your spot and be first when we go live.
+              </p>
+
+              {/* 2-column form grid (image 2 style) */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+
+                {/* Row 1: Name + Email */}
+                <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 12 }}>
+                  <div>
+                    <Label text="Full Name*" />
+                    <input value={form.name} onChange={handle("name")} placeholder="Richmond Sarpong" style={inp("name")} onFocus={() => setFocus("name")} onBlur={() => setFocus("")} />
+                    <Err k="name" />
+                  </div>
+                  <div>
+                    <Label text="Email Address*" />
+                    <input value={form.email} onChange={handle("email")} type="email" placeholder="you@example.com" style={inp("email")} onFocus={() => setFocus("email")} onBlur={() => setFocus("")} />
+                    <Err k="email" />
+                  </div>
+                </div>
+
+                {/* Row 2: City + Country */}
+                <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 12 }}>
+                  <div>
+                    <Label text="City*" />
+                    <input value={form.city} onChange={handle("city")} placeholder="Accra" style={inp("city")} onFocus={() => setFocus("city")} onBlur={() => setFocus("")} />
+                    <Err k="city" />
+                  </div>
+                  <div>
+                    <Label text="Country*" />
+                    <select value={form.country} onChange={handle("country")} onFocus={() => setFocus("country")} onBlur={() => setFocus("")}
+                      style={{ ...inp("country"), appearance: "none", WebkitAppearance: "none" }}>
+                      <option value="" disabled>Select country</option>
+                      {Object.keys(DIAL_CODES).map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                    <Err k="country" />
+                  </div>
+                </div>
+
+                {/* Row 3: Phone full width */}
+                <div>
+                  <Label text="Phone Number*" />
+                  <div style={{ display: "flex", gap: 8 }}>
+                    {form.country && DIAL_CODES[form.country] && (
+                      <div style={{
+                        display: "flex", alignItems: "center", padding: "0 14px",
+                        borderRadius: 12, fontWeight: 700, fontSize: ".9rem",
+                        background: WHITE, border: `1.5px solid rgba(27,58,42,0.18)`,
+                        color: DARK, whiteSpace: "nowrap", flexShrink: 0,
+                      }}>{DIAL_CODES[form.country]}</div>
+                    )}
+                    <input value={form.phone} onChange={handle("phone")} type="tel" placeholder="XX XXX XXXX" style={{ ...inp("phone"), flex: 1 }} onFocus={() => setFocus("phone")} onBlur={() => setFocus("")} />
+                  </div>
+                  <Err k="phone" />
+                </div>
+
+                {/* Submit — centered pill (image 2 style) */}
+                <div style={{ textAlign: "center", marginTop: 8 }}>
+                  <button onClick={submit} disabled={loading} style={{
+                    background: loading ? `${DARK}99` : DARK, color: WHITE,
+                    border: "none", borderRadius: 999,
+                    padding: "15px 56px",
+                    fontWeight: 900, fontSize: "1rem",
+                    fontFamily: "'Plus Jakarta Sans',sans-serif",
+                    cursor: loading ? "default" : "pointer",
+                    display: "inline-flex", alignItems: "center", gap: 10,
+                    transition: "opacity .2s",
+                  }}>
+                    {loading
+                      ? <><div style={{ width: 18, height: 18, border: "2.5px solid rgba(255,255,255,0.3)", borderTopColor: WHITE, borderRadius: "50%", animation: "spin .8s linear infinite" }} /> Securing your spot…</>
+                      : "Join now →"}
+                  </button>
+                </div>
+
+                <p style={{ textAlign: "center", fontSize: ".76rem", color: MUTED, lineHeight: 1.6 }}>
+                  By submitting you agree to receive updates from Kaya.<br />No spam — you can unsubscribe at any time.
+                </p>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
