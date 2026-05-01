@@ -13,7 +13,7 @@ const TERRA = "#C85A38";
 const GOLD  = "#E8B83C";
 const TEXT  = "#1A1A1A";
 const WHITE = "#FFFFFF";
-const MUTED = "#7A7A6A";
+const MUTED = "#2E2E2E";
 const SOFT  = "rgba(27,58,42,0.06)";
 
 // ── Global styles ──────────────────────────────────────────────────────────────
@@ -419,7 +419,7 @@ function HowItWorks() {
                 fontSize: ".98rem", fontWeight: 800,
                 color: WHITE, marginBottom: 10, lineHeight: 1.3,
               }}>{s.title}</h3>
-              <p style={{ fontSize: ".84rem", color: "rgba(255,255,255,0.45)", lineHeight: 1.7 }}>{s.desc}</p>
+              <p style={{ fontSize: ".84rem", color: "rgba(255,255,255,0.7)", lineHeight: 1.7 }}>{s.desc}</p>
               {i < STEPS.length - 1 && !mob && (
                 <span style={{ position: "absolute", top: "50%", right: -18, color: "rgba(255,255,255,0.2)", fontSize: "1.2rem" }}>→</span>
               )}
@@ -537,7 +537,7 @@ function BentoCard({ icon, emoji, stat, title, desc, light, dark: isDark, small 
         fontSize: small ? ".88rem" : "1rem", fontWeight: 800,
         color: isDark ? WHITE : TEXT, marginBottom: 6, lineHeight: 1.3,
       }}>{title}</h3>
-      <p style={{ fontSize: small ? ".78rem" : ".85rem", color: isDark ? "rgba(255,255,255,0.65)" : "#4A4A3A", lineHeight: 1.65 }}>{desc}</p>
+      <p style={{ fontSize: small ? ".78rem" : ".85rem", color: isDark ? "rgba(255,255,255,0.75)" : "#2E2E2E", lineHeight: 1.65 }}>{desc}</p>
     </div>
   );
 }
