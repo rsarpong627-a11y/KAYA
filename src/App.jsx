@@ -145,16 +145,6 @@ function Hero({ onWaitlist }) {
       }}>
         {/* Left */}
         <div style={{ animation: "fadeUp .8s .1s both" }}>
-          {/* Badge */}
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            border: `1.5px solid rgba(27,58,42,0.2)`,
-            borderRadius: 999, padding: "6px 16px", marginBottom: 28,
-          }}>
-            <span style={{ width: 7, height: 7, borderRadius: "50%", background: TERRA, display: "inline-block" }} />
-            <span style={{ fontSize: ".78rem", fontWeight: 600, color: TEXT, letterSpacing: ".06em", textTransform: "uppercase" }}>Now launching in Ghana</span>
-          </div>
-
           {/* Headline */}
           <h1 style={{
             fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -417,18 +407,12 @@ function HowItWorks() {
               transition: `opacity .6s ${i * .12}s, transform .6s ${i * .12}s`,
               position: "relative",
             }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 32 }}>
+              <div style={{ marginBottom: 32 }}>
                 <span style={{
                   fontFamily: "'Plus Jakarta Sans', sans-serif",
                   fontSize: "2.8rem", fontWeight: 900,
                   color: GOLD, lineHeight: 1,
                 }}>{s.n}</span>
-                <div style={{
-                  width: 36, height: 36, borderRadius: "50%",
-                  background: "rgba(255,255,255,0.1)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: "1rem",
-                }}>{s.icon}</div>
               </div>
               <h3 style={{
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -477,8 +461,7 @@ function WhyKaya() {
               <BentoCard icon="⚡" stat="30min" title="Under 30-min delivery." desc="Our rider network is built for speed." light />
               <BentoCard icon="📡" title="Live GPS tracking." desc="From pickup to your door." dark />
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
-              <BentoCard emoji="🇬🇭" title="Built for Ghana." desc="Mobile money native." light small />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <BentoCard icon="🛡" title="Secure payments." desc="Powered by Paystack." light small />
               <BentoCard icon="🤝" title="Fair for all." desc="Lower rates, better pay." light small />
             </div>
@@ -492,8 +475,7 @@ function WhyKaya() {
                 <BentoCard icon="📡" title="Live GPS tracking." desc="Know exactly where your order is — from pickup to your door." dark />
               </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
-              <BentoCard emoji="🇬🇭" title="Built for Ghana." desc="Mobile money native. Local brand. Local riders." light />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <BentoCard icon="🛡" title="Secure payments." desc="Powered by Paystack. Card or mobile money — always protected." light />
               <BentoCard icon="🤝" title="Fair for everyone." desc="Lower commission than competitors. Better pay for riders." light />
             </div>
@@ -523,7 +505,23 @@ function BentoZero() {
   );
 }
 
+// Maps emoji character to Twemoji SVG codepoint string
+function twemojiCode(e) {
+  const cp = [...e].map(c => c.codePointAt(0).toString(16)).filter(c => c !== 'fe0f').join('-');
+  return cp;
+}
+
+function TwemojiImg({ emoji, size = 28 }) {
+  return (
+    <img
+      src={`https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/${twemojiCode(emoji)}.svg`}
+      width={size} height={size} alt="" style={{ display: "block" }}
+    />
+  );
+}
+
 function BentoCard({ icon, emoji, stat, title, desc, light, dark: isDark, small }) {
+  const glyph = emoji || icon;
   return (
     <div style={{
       background: isDark ? DARK : light ? WHITE : CREAM,
@@ -531,7 +529,7 @@ function BentoCard({ icon, emoji, stat, title, desc, light, dark: isDark, small 
       border: isDark ? "none" : `1px solid rgba(27,58,42,0.1)`,
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-        <span style={{ fontSize: isDark ? "1.2rem" : "1.1rem" }}>{emoji || icon}</span>
+        {glyph && <TwemojiImg emoji={glyph} size={small ? 24 : 28} />}
         {stat && <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 900, fontSize: "1.6rem", color: TEXT }}>{stat}</span>}
       </div>
       <h3 style={{
@@ -554,7 +552,6 @@ function Stats() {
     { value: "30 min", label: "Average delivery" },
     { value: "4.9★", label: "App store rating" },
     { value: "100+", label: "Vendors at launch" },
-    { value: "Accra · Kumasi", label: "Launch cities" },
   ];
 
   return (
@@ -562,7 +559,7 @@ function Stats() {
       <div ref={ref} style={{
         maxWidth: 1280, margin: "0 auto",
         display: "grid",
-        gridTemplateColumns: mob ? "1fr 1fr" : "repeat(4,1fr)",
+        gridTemplateColumns: mob ? "1fr 1fr 1fr" : "repeat(3,1fr)",
         gap: 10,
         opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(24px)",
         transition: "opacity .7s, transform .7s",
