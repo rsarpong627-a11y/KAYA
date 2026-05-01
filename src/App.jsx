@@ -459,7 +459,7 @@ function WhyKaya() {
             <BentoZero />
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <BentoCard icon="⚡" stat="30min" title="Under 30-min delivery." desc="Our rider network is built for speed." light />
-              <BentoCard icon="📡" title="Live GPS tracking." desc="From pickup to your door." dark />
+              <BentoCard icon="📡" title="Live GPS tracking." desc="From pickup to your door." light />
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <BentoCard icon="🛡" title="Secure payments." desc="Powered by Paystack." light small />
@@ -537,7 +537,7 @@ function BentoCard({ icon, emoji, stat, title, desc, light, dark: isDark, small 
         fontSize: small ? ".88rem" : "1rem", fontWeight: 800,
         color: isDark ? WHITE : TEXT, marginBottom: 6, lineHeight: 1.3,
       }}>{title}</h3>
-      <p style={{ fontSize: small ? ".78rem" : ".85rem", color: isDark ? "rgba(255,255,255,0.45)" : MUTED, lineHeight: 1.65 }}>{desc}</p>
+      <p style={{ fontSize: small ? ".78rem" : ".85rem", color: isDark ? "rgba(255,255,255,0.65)" : "#4A4A3A", lineHeight: 1.65 }}>{desc}</p>
     </div>
   );
 }
@@ -763,7 +763,7 @@ function Footer({ onWaitlist }) {
 
         <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 28, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 0 }}>
           <p style={{ fontSize: ".82rem", color: "rgba(255,255,255,0.2)" }}>© 2026 Kaya. Built in Ghana 🇬🇭.</p>
-          <p style={{ fontSize: ".82rem", color: "rgba(255,255,255,0.2)" }}>Powered by Paystack. Made with love for Accra &amp; Kumasi.</p>
+          <p style={{ fontSize: ".82rem", color: "rgba(255,255,255,0.2)" }}>hello@kayafast.com</p>
         </div>
 
         {/* Watermark */}
