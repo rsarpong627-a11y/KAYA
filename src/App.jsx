@@ -170,9 +170,9 @@ function Hero({ onWaitlist }) {
             color: MUTED, lineHeight: 1.75,
             maxWidth: 460, marginBottom: 36, marginTop: 16,
           }}>
-            Food, groceries, pharmacy and retail — everything you need,
-            one tap away. Built in Ghana, powered by mobile money,
-            delivered to your door.
+            Everything. Not just food.<br />
+            Groceries. Pharmacy. Retail.<br />
+            One tap — it's at your door.
           </p>
 
           {/* Role pills */}
