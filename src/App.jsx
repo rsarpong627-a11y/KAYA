@@ -201,28 +201,6 @@ function Hero({ onWaitlist }) {
                 alt="Food"
                 style={{ width: "100%", height: 500, objectFit: "cover", display: "block" }}
               />
-              {/* Circular badge overlay */}
-              <div style={{
-                position: "absolute", top: "50%", left: "50%",
-                transform: "translate(-50%, -50%)",
-              }}>
-                <CircularBadge />
-              </div>
-            </div>
-
-            {/* Floating delivery badge */}
-            <div style={{
-              position: "absolute", bottom: 48, left: -32,
-              background: GOLD, borderRadius: 999, padding: "12px 20px",
-              display: "flex", alignItems: "center", gap: 10,
-              boxShadow: "0 8px 32px rgba(0,0,0,0.14)",
-            }}>
-              <span style={{ fontSize: "1.1rem" }}>📡</span>
-              <div>
-                <div style={{ fontSize: ".68rem", color: DARK, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".06em" }}>Arriving in</div>
-                <div style={{ fontSize: "1rem", color: DARK, fontWeight: 900 }}>22 min</div>
-              </div>
-            </div>
 
             {/* Grocery image below */}
             <div style={{ borderRadius: 16, overflow: "hidden", marginTop: 12, height: 160 }}>
