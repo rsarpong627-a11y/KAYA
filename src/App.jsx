@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const supabase = createClient(
   "https://galtdialnwommzmxopgh.supabase.co",
@@ -767,6 +768,7 @@ const DIAL_CODES = {
 function WaitlistModal({ open, onClose }) {
   const [form, setForm] = useState({ name: "", city: "", country: "", phone: "", email: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [animating, setAnimating] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const w = useW();
@@ -802,7 +804,7 @@ function WaitlistModal({ open, onClose }) {
       body: { name: form.name, email: form.email, city: form.city, country: form.country },
     });
     setLoading(false);
-    setSubmitted(true);
+    setAnimating(true);
   };
 
   if (!open) return null;
@@ -855,7 +857,17 @@ function WaitlistModal({ open, onClose }) {
           fontSize: ".9rem", display: "flex", alignItems: "center", justifyContent: "center",
         }}>✕</button>
 
-        {submitted ? (
+        {animating ? (
+          <div style={{ textAlign: "center", padding: "32px 0", minHeight: 320, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <DotLottieReact
+              src="/Untitled file (1).lottie"
+              autoplay
+              loop={false}
+              style={{ width: 280, height: 280 }}
+              onComplete={() => { setAnimating(false); setSubmitted(true); }}
+            />
+          </div>
+        ) : submitted ? (
           <div style={{ textAlign: "center", padding: "32px 0" }}>
             <div style={{ fontSize: "3rem", marginBottom: 20 }}>🎉</div>
             <h3 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: "2rem", fontWeight: 900, color: DARK, marginBottom: 14 }}>
