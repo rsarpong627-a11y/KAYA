@@ -201,6 +201,7 @@ function Hero({ onWaitlist }) {
                 alt="Food"
                 style={{ width: "100%", height: 500, objectFit: "cover", display: "block" }}
               />
+            </div>
 
             {/* Grocery image below */}
             <div style={{ borderRadius: 16, overflow: "hidden", marginTop: 12, height: 160 }}>
