@@ -991,7 +991,7 @@ export default function App() {
       <style>{styles}</style>
       <Navbar onWaitlist={show} />
       <Hero onWaitlist={show} />
-      <Ticker />
+
       <Categories onWaitlist={show} />
       <HowItWorks />
       <WhyKaya />
