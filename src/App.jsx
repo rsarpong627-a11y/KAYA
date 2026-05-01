@@ -170,9 +170,9 @@ function Hero({ onWaitlist }) {
             color: MUTED, lineHeight: 1.75,
             maxWidth: 460, marginBottom: 36, marginTop: 16,
           }}>
-            Food, groceries, pharmacy and retail — one app for your entire day.
-            Built for <strong style={{ color: TEXT }}>Kumasi</strong> &amp; <strong style={{ color: TEXT }}>Accra</strong>.
-            Ride with mobile money, land at your door.
+            Food, groceries, pharmacy and retail — everything you need,
+            one tap away. Built in Ghana, powered by mobile money,
+            delivered to your door.
           </p>
 
           {/* Role pills */}
@@ -909,7 +909,7 @@ function WaitlistModal({ open, onClose }) {
             <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 10 }}>
 
               <Field label="Full Name*" error={errors.name}>
-                <input value={form.name} onChange={handle("name")} placeholder="Richmond Sarpong" style={inputStyle} />
+                <input value={form.name} onChange={handle("name")} placeholder="Joyce Amoah" style={inputStyle} />
               </Field>
 
               <Field label="Email Address*" error={errors.email}>
