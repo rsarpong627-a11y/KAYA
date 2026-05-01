@@ -698,28 +698,15 @@ function WaitlistCTA({ onWaitlist }) {
           ))}
         </div>
 
-        {/* Email CTA */}
-        <div style={{
-          display: "flex", gap: 0, maxWidth: 520, margin: "0 auto",
-          background: "rgba(255,255,255,0.15)", borderRadius: 999,
-          border: "2px solid rgba(255,255,255,0.3)", overflow: "hidden",
-        }}>
-          <input type="email" placeholder="you@kaya.gh" style={{
-            flex: 1, border: "none", outline: "none",
-            padding: "15px 22px", fontSize: ".95rem",
-            fontFamily: "'Inter', sans-serif",
-            background: "transparent", color: WHITE,
-          }} />
-          <button onClick={onWaitlist} style={{
-            background: DARK, color: WHITE, border: "none",
-            padding: "15px 26px", fontWeight: 800, fontSize: ".9rem",
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
-            cursor: "pointer", whiteSpace: "nowrap",
-            display: "flex", alignItems: "center", gap: 8,
-          }}>Join the waitlist →</button>
-        </div>
+        <button onClick={onWaitlist} style={{
+          background: DARK, color: WHITE, border: "none", borderRadius: 999,
+          padding: "16px 48px", fontWeight: 800, fontSize: "1rem",
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 8,
+          boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
+        }}>Reserve your spot →</button>
 
-        <p style={{ marginTop: 14, fontSize: ".78rem", color: "rgba(255,255,255,0.4)" }}>Free to join · No credit card · Launch perks included</p>
+        <p style={{ marginTop: 16, fontSize: ".78rem", color: "rgba(255,255,255,0.4)" }}>Free to join · No credit card needed</p>
       </div>
     </section>
   );
@@ -1016,7 +1003,7 @@ export default function App() {
       <Categories onWaitlist={show} />
       <HowItWorks />
       <WhyKaya />
-      <Stats />
+
       <Partners onWaitlist={show} />
       <WaitlistCTA onWaitlist={show} />
       <Footer onWaitlist={show} />
