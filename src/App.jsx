@@ -869,23 +869,59 @@ function WaitlistModal({ open, onClose }) {
               src="/Untitled file (1).lottie"
               autoplay
               loop={false}
+              speed={1}
               style={{ width: 280, height: 280 }}
               onComplete={() => { setAnimating(false); setSubmitted(true); }}
             />
+            {/* Fallback: force transition after 2.3s in case onComplete doesn't fire */}
+            {(() => { setTimeout(() => { if (animating) { setAnimating(false); setSubmitted(true); } }, 2300); return null; })()}
           </div>
         ) : submitted ? (
-          <div style={{ textAlign: "center", padding: "32px 0" }}>
-            <div style={{ fontSize: "3rem", marginBottom: 20 }}>🎉</div>
-            <h3 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: "2rem", fontWeight: 900, color: DARK, marginBottom: 14 }}>
-              You're on the list!
-            </h3>
-            <p style={{ color: MUTED, lineHeight: 1.8, marginBottom: 24 }}>
-              Thanks <strong style={{ color: TEXT }}>{form.name.split(" ")[0]}</strong>! We'll reach out to{" "}
-              <strong style={{ color: TEXT }}>{form.email}</strong> when Kaya launches in <strong>{form.city}</strong>.
-            </p>
-            <div style={{ background: "rgba(27,58,42,0.06)", border: "1px solid rgba(27,58,42,0.12)", borderRadius: 12, padding: "14px 18px" }}>
-              <p style={{ fontSize: ".88rem", color: DARK, fontWeight: 600 }}>📱 Check your inbox for your exclusive early access invite.</p>
+          <div style={{ textAlign: "center", padding: mob ? "16px 0 8px" : "24px 0 8px" }}>
+            {/* Illustration */}
+            <div style={{
+              width: "100%", maxWidth: 320, margin: "0 auto 28px",
+              background: "#F0F4FF", borderRadius: 20, padding: "28px 20px 0",
+              overflow: "hidden",
+            }}>
+              <img
+                src="/rider-illustration.svg"
+                alt="Success"
+                style={{ width: "100%", maxHeight: 200, objectFit: "contain", display: "block" }}
+              />
             </div>
+
+            {/* Heading */}
+            <h3 style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: mob ? "2rem" : "2.4rem",
+              fontWeight: 900, color: TEXT,
+              letterSpacing: "-1px", marginBottom: 16,
+            }}>You're in!</h3>
+
+            {/* Body text */}
+            <p style={{ color: MUTED, lineHeight: 1.8, marginBottom: 12, fontSize: ".95rem", maxWidth: 420, margin: "0 auto 12px" }}>
+              Your spot on the Kaya waitlist is confirmed.
+              We've been building something fast, reliable and made for Ghana.
+              And now we're ready for you.
+            </p>
+            <p style={{ color: MUTED, lineHeight: 1.8, marginBottom: 28, fontSize: ".95rem", maxWidth: 420, margin: "0 auto 28px" }}>
+              We'll reach out to <strong style={{ color: TEXT }}>{form.email}</strong> the moment we launch in your city.
+            </p>
+
+            {/* CTA */}
+            <button onClick={onClose} style={{
+              background: DARK, color: WHITE, border: "none",
+              borderRadius: 999, padding: "14px 48px",
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontWeight: 800, fontSize: "1rem", cursor: "pointer",
+              marginBottom: 20,
+            }}>Close</button>
+
+            {/* Note */}
+            <p style={{ fontSize: ".78rem", color: "#aaa", lineHeight: 1.6 }}>
+              Check your inbox — your exclusive early access invite is on its way.
+            </p>
           </div>
         ) : (
           <>
