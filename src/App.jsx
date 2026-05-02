@@ -784,7 +784,7 @@ function Field({ label, children, error, span }) {
 }
 
 function WaitlistModal({ open, onClose }) {
-  const [form, setForm] = useState({ name: "", city: "", country: "", phone: "", email: "" });
+  const [form, setForm] = useState({ firstName: "", lastName: "", city: "", country: "", phone: "", email: "" });
   const [submitted, setSubmitted] = useState(false);
   const [animating, setAnimating] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -799,7 +799,8 @@ function WaitlistModal({ open, onClose }) {
 
   const validate = () => {
     const e = {};
-    if (!form.name.trim()) e.name = true;
+    if (!form.firstName.trim()) e.firstName = true;
+    if (!form.lastName.trim()) e.lastName = true;
     if (!form.city.trim()) e.city = true;
     if (!form.country.trim()) e.country = true;
     if (!/^\+?[\d\s\-()]{7,}$/.test(form.phone)) e.phone = true;
@@ -816,10 +817,11 @@ function WaitlistModal({ open, onClose }) {
     const e = validate();
     if (Object.keys(e).length) { setErrors(e); return; }
     setLoading(true);
-    const { error } = await supabase.from("waitlist").insert([{ name: form.name, email: form.email, phone: form.phone, city: form.city, country: form.country }]);
+    const fullName = `${form.firstName} ${form.lastName}`.trim();
+    const { error } = await supabase.from("waitlist").insert([{ name: fullName, email: form.email, phone: form.phone, city: form.city, country: form.country }]);
     if (error) { setLoading(false); setErrors({ email: true }); return; }
     await supabase.functions.invoke("send-waitlist-email", {
-      body: { name: form.name, email: form.email, city: form.city, country: form.country },
+      body: { name: fullName, email: form.email, city: form.city, country: form.country },
     });
     setLoading(false);
     setAnimating(true);
@@ -827,13 +829,16 @@ function WaitlistModal({ open, onClose }) {
 
   if (!open) return null;
 
-  const inputStyle = {
-    width: "100%", border: "none", outline: "none",
+  // Compact pill-style input matching the reference
+  const pill = (key) => ({
+    width: "100%", padding: "14px 18px",
+    background: "#F2F2F2",
+    border: `1.5px solid ${errors[key] ? "#e53e3e" : "transparent"}`,
+    borderRadius: 999, outline: "none",
     fontSize: ".95rem", color: TEXT,
-    padding: "4px 0 2px", lineHeight: "1.5",
-    background: "transparent", fontFamily: "'Inter', sans-serif",
-    display: "block", minHeight: 28,
-  };
+    fontFamily: "'Inter', sans-serif",
+    display: "block", boxSizing: "border-box",
+  });
 
   return (
     <div style={{
@@ -903,7 +908,7 @@ function WaitlistModal({ open, onClose }) {
               And now we're ready for you.
             </p>
             <p style={{ color: MUTED, lineHeight: 1.8, marginBottom: 28, fontSize: ".95rem", maxWidth: 420, margin: "0 auto 28px" }}>
-              We'll reach out to <strong style={{ color: TEXT }}>{form.email}</strong> the moment we launch in your city.
+              We'll reach out to <strong style={{ color: TEXT }}>{form.firstName}</strong> at <strong style={{ color: TEXT }}>{form.email}</strong> the moment we launch in your city.
             </p>
 
             {/* CTA */}
@@ -935,57 +940,58 @@ function WaitlistModal({ open, onClose }) {
               </p>
             </div>
 
-            {/* 2-column grid form — labels inside boxes */}
-            <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 10 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
 
-              <Field label="Full Name*" error={errors.name}>
-                <input value={form.name} onChange={handle("name")} placeholder="Joyce Amoah" style={inputStyle} />
-              </Field>
+              {/* Row 1: First + Last name */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                <input value={form.firstName} onChange={handle("firstName")} placeholder="First Name" style={pill("firstName")} />
+                <input value={form.lastName} onChange={handle("lastName")} placeholder="Last Name" style={pill("lastName")} />
+              </div>
 
-              <Field label="Email Address*" error={errors.email}>
-                <input value={form.email} onChange={handle("email")} type="email" placeholder="you@example.com" style={inputStyle} />
-              </Field>
+              {/* Email */}
+              <input value={form.email} onChange={handle("email")} type="email" placeholder="Email" style={pill("email")} />
 
-              <Field label="City*" error={errors.city}>
-                <input value={form.city} onChange={handle("city")} placeholder="Accra" style={inputStyle} />
-              </Field>
-
-              <Field label="Country*" error={errors.country}>
+              {/* City + Country */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                <input value={form.city} onChange={handle("city")} placeholder="City" style={pill("city")} />
                 <select value={form.country} onChange={handle("country")}
-                  style={{ ...inputStyle, appearance: "none", WebkitAppearance: "none" }}>
-                  <option value="" disabled>Select country</option>
+                  style={{ ...pill("country"), appearance: "none", WebkitAppearance: "none" }}>
+                  <option value="" disabled>Country</option>
                   {Object.keys(DIAL_CODES).map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
-              </Field>
+              </div>
 
-              <Field label="Phone Number*" error={errors.phone} span>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  {form.country && DIAL_CODES[form.country] && (
-                    <span style={{ fontSize: ".9rem", fontWeight: 700, color: DARK, flexShrink: 0 }}>{DIAL_CODES[form.country]}</span>
-                  )}
-                  <input value={form.phone} onChange={handle("phone")} type="tel" placeholder="XX XXX XXXX" style={inputStyle} />
-                </div>
-              </Field>
+              {/* Phone */}
+              <div style={{ display: "flex", gap: 10 }}>
+                {form.country && DIAL_CODES[form.country] && (
+                  <div style={{
+                    padding: "14px 18px", background: "#F2F2F2",
+                    borderRadius: 999, fontWeight: 700, fontSize: ".9rem",
+                    color: DARK, whiteSpace: "nowrap", flexShrink: 0,
+                  }}>{DIAL_CODES[form.country]}</div>
+                )}
+                <input value={form.phone} onChange={handle("phone")} type="tel" placeholder="Phone Number" style={{ ...pill("phone"), flex: 1 }} />
+              </div>
 
             </div>
 
-            {/* Submit — centered pill */}
-            <div style={{ textAlign: "center", marginTop: 28 }}>
+            {/* Submit */}
+            <div style={{ marginTop: 20 }}>
               <button onClick={submit} disabled={loading} style={{
                 background: loading ? "#ccc" : DARK, color: WHITE,
-                border: "none", borderRadius: 999, padding: "15px 64px",
-                fontWeight: 800, fontSize: "1rem",
+                border: "none", borderRadius: 999, padding: "15px",
+                fontWeight: 800, fontSize: "1rem", width: "100%",
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
                 cursor: loading ? "default" : "pointer",
-                display: "inline-flex", alignItems: "center", gap: 10,
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
               }}>
                 {loading
                   ? <><div style={{ width: 18, height: 18, border: "2.5px solid rgba(255,255,255,0.3)", borderTopColor: WHITE, borderRadius: "50%", animation: "spin .8s linear infinite" }} /> Securing spot…</>
-                  : "Join now"}
+                  : "Create account"}
               </button>
             </div>
 
-            <p style={{ textAlign: "center", fontSize: ".76rem", color: MUTED, lineHeight: 1.65, marginTop: 16 }}>
+            <p style={{ textAlign: "center", fontSize: ".76rem", color: "#aaa", lineHeight: 1.65, marginTop: 14 }}>
               By submitting you agree to receive updates from Kaya. You may unsubscribe at any time.
             </p>
           </>
