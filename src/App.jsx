@@ -878,16 +878,13 @@ function WaitlistModal({ open, onClose }) {
           </div>
         ) : submitted ? (
           <div style={{ textAlign: "center", padding: mob ? "16px 0 8px" : "24px 0 8px" }}>
-            {/* Illustration */}
-            <div style={{
-              width: "100%", maxWidth: 320, margin: "0 auto 28px",
-              background: "#F0F4FF", borderRadius: 20, padding: "28px 20px 0",
-              overflow: "hidden",
-            }}>
-              <img
-                src="/rider-illustration.svg"
-                alt="Success"
-                style={{ width: "100%", maxHeight: 200, objectFit: "contain", display: "block" }}
+            {/* Confetti bird animation */}
+            <div style={{ width: 260, height: 260, margin: "0 auto 12px" }}>
+              <DotLottieReact
+                src="/confettiBird.lottie"
+                autoplay
+                loop={false}
+                style={{ width: "100%", height: "100%" }}
               />
             </div>
 
