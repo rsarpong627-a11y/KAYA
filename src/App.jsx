@@ -817,7 +817,7 @@ function WaitlistModal({ open, onClose }) {
         borderRadius: 14, padding: "10px 16px 12px",
         background: WHITE, cursor: "text",
       }}>
-        <div style={{ fontSize: ".72rem", color: error ? "#e53e3e" : MUTED, fontWeight: 500, marginBottom: 3 }}>{label}{error ? " *" : ""}</div>
+        <div style={{ fontSize: ".72rem", color: error ? "#e53e3e" : "#888", fontWeight: 500, marginBottom: 3 }}>{label}{error ? " *" : ""}</div>
         {children}
       </div>
     </div>
@@ -825,8 +825,10 @@ function WaitlistModal({ open, onClose }) {
 
   const inputStyle = {
     width: "100%", border: "none", outline: "none",
-    fontSize: ".95rem", color: TEXT, padding: 0,
+    fontSize: ".95rem", color: TEXT,
+    padding: "4px 0 2px", lineHeight: "1.5",
     background: "transparent", fontFamily: "'Inter', sans-serif",
+    display: "block", minHeight: 28,
   };
 
   return (
