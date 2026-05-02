@@ -765,6 +765,24 @@ const DIAL_CODES = {
   "Algeria":"+213","Angola":"+244","Benin":"+229","Botswana":"+267","Burkina Faso":"+226","Burundi":"+257","Cabo Verde":"+238","Cameroon":"+237","Central African Republic":"+236","Chad":"+235","Comoros":"+269","Congo (Brazzaville)":"+242","Congo (DRC)":"+243","Djibouti":"+253","Egypt":"+20","Equatorial Guinea":"+240","Eritrea":"+291","Eswatini":"+268","Ethiopia":"+251","Gabon":"+241","Gambia":"+220","Ghana":"+233","Guinea":"+224","Guinea-Bissau":"+245","Ivory Coast":"+225","Kenya":"+254","Lesotho":"+266","Liberia":"+231","Libya":"+218","Madagascar":"+261","Malawi":"+265","Mali":"+223","Mauritania":"+222","Mauritius":"+230","Morocco":"+212","Mozambique":"+258","Namibia":"+264","Niger":"+227","Nigeria":"+234","Rwanda":"+250","São Tomé & Príncipe":"+239","Senegal":"+221","Seychelles":"+248","Sierra Leone":"+232","Somalia":"+252","South Africa":"+27","South Sudan":"+211","Sudan":"+249","Tanzania":"+255","Togo":"+228","Tunisia":"+216","Uganda":"+256","Zambia":"+260","Zimbabwe":"+263",
 };
 
+// Defined outside WaitlistModal so it never remounts on re-render
+function Field({ label, children, error, span }) {
+  return (
+    <div style={{ gridColumn: span ? "1 / -1" : "auto" }}>
+      <div style={{
+        border: `1.5px solid ${error ? "#e53e3e" : "rgba(27,58,42,0.15)"}`,
+        borderRadius: 14, padding: "10px 16px 12px",
+        background: "#FFFFFF", cursor: "text",
+      }}>
+        <div style={{ fontSize: ".72rem", color: error ? "#e53e3e" : "#888", fontWeight: 500, marginBottom: 3 }}>
+          {label}{error ? " *" : ""}
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function WaitlistModal({ open, onClose }) {
   const [form, setForm] = useState({ name: "", city: "", country: "", phone: "", email: "" });
   const [submitted, setSubmitted] = useState(false);
@@ -808,20 +826,6 @@ function WaitlistModal({ open, onClose }) {
   };
 
   if (!open) return null;
-
-  // Field box — label inside the box at top, input below (exactly like reference)
-  const Field = ({ label, children, error, span }) => (
-    <div style={{ gridColumn: span ? "1 / -1" : "auto" }}>
-      <div style={{
-        border: `1.5px solid ${error ? "#e53e3e" : "rgba(27,58,42,0.15)"}`,
-        borderRadius: 14, padding: "10px 16px 12px",
-        background: WHITE, cursor: "text",
-      }}>
-        <div style={{ fontSize: ".72rem", color: error ? "#e53e3e" : "#888", fontWeight: 500, marginBottom: 3 }}>{label}{error ? " *" : ""}</div>
-        {children}
-      </div>
-    </div>
-  );
 
   const inputStyle = {
     width: "100%", border: "none", outline: "none",
