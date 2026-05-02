@@ -840,163 +840,171 @@ function WaitlistModal({ open, onClose }) {
     display: "block", boxSizing: "border-box",
   });
 
-  return (
-    <div style={{
-      position: "fixed", inset: 0, zIndex: 99999,
-      background: "rgba(10,20,12,0.55)", backdropFilter: "blur(10px)",
-      display: "flex", alignItems: mob ? "flex-end" : "center",
-      justifyContent: "center", padding: mob ? 0 : 24, overflowY: "auto",
-    }}
-      onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
-
-      <div style={{
-        background: WHITE,
-        borderRadius: mob ? "20px 20px 0 0" : 20,
-        width: "100%", maxWidth: 680,
-        maxHeight: mob ? "96svh" : "92svh",
-        overflowY: "auto", position: "relative",
-        padding: mob ? "32px 20px 40px" : "56px 56px 48px",
-        boxShadow: "0 32px 100px rgba(0,0,0,0.2)",
-        animation: "fadeUp .35s ease",
-      }}>
-
-        {/* Close */}
-        <button onClick={onClose} style={{
-          position: "absolute", top: 18, right: 18,
-          background: "#f0f0f0", border: "none", color: "#888",
-          borderRadius: "50%", width: 34, height: 34, cursor: "pointer",
-          fontSize: ".9rem", display: "flex", alignItems: "center", justifyContent: "center",
-        }}>✕</button>
-
-        {animating ? (
-          <div style={{ textAlign: "center", padding: "32px 0", minHeight: 320, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <DotLottieReact
-              src="/Untitled file (1).lottie"
-              autoplay
-              loop={false}
-              speed={1}
-              style={{ width: 280, height: 280 }}
-              onComplete={() => { setAnimating(false); setSubmitted(true); }}
-            />
-            {/* Fallback: force transition after 2.3s in case onComplete doesn't fire */}
-            {(() => { setTimeout(() => { if (animating) { setAnimating(false); setSubmitted(true); } }, 2300); return null; })()}
+  // Shared form/success content
+  const formContent = (
+    <>
+      {animating ? (
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1 }}>
+          <DotLottieReact src="/Untitled file (1).lottie" autoplay loop={false} speed={1}
+            style={{ width: 260, height: 260 }}
+            onComplete={() => { setAnimating(false); setSubmitted(true); }}
+          />
+          {(() => { setTimeout(() => { if (animating) { setAnimating(false); setSubmitted(true); } }, 2300); return null; })()}
+        </div>
+      ) : submitted ? (
+        <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flex: 1 }}>
+          <div style={{ width: 220, height: 220, marginBottom: 8 }}>
+            <DotLottieReact src="/confettiBird.lottie" autoplay loop={false} style={{ width: "100%", height: "100%" }} />
           </div>
-        ) : submitted ? (
-          <div style={{ textAlign: "center", padding: mob ? "16px 0 8px" : "24px 0 8px" }}>
-            {/* Confetti bird animation */}
-            <div style={{ width: 260, height: 260, margin: "0 auto 12px" }}>
-              <DotLottieReact
-                src="/confettiBird.lottie"
-                autoplay
-                loop={false}
-                style={{ width: "100%", height: "100%" }}
-              />
+          <h3 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: mob ? "2rem" : "2.6rem", fontWeight: 900, color: TEXT, letterSpacing: "-1px", marginBottom: 14 }}>You're in!</h3>
+          <p style={{ color: MUTED, lineHeight: 1.8, fontSize: ".95rem", maxWidth: 380, marginBottom: 10 }}>
+            Your spot on the Kaya waitlist is confirmed. We've been building something fast, reliable and made for Ghana. And now we're ready for you.
+          </p>
+          <p style={{ color: MUTED, lineHeight: 1.8, fontSize: ".95rem", maxWidth: 380, marginBottom: 28 }}>
+            We'll reach out to <strong style={{ color: TEXT }}>{form.firstName}</strong> at <strong style={{ color: TEXT }}>{form.email}</strong> the moment we launch in your city.
+          </p>
+          <button onClick={onClose} style={{
+            background: DARK, color: WHITE, border: "none", borderRadius: 999,
+            padding: "14px 52px", fontFamily: "'Plus Jakarta Sans',sans-serif",
+            fontWeight: 800, fontSize: "1rem", cursor: "pointer", marginBottom: 16,
+          }}>Close</button>
+          <p style={{ fontSize: ".78rem", color: "#aaa" }}>Check your inbox — your early access invite is on its way.</p>
+        </div>
+      ) : (
+        <>
+          <h3 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: mob ? "1.8rem" : "2rem", fontWeight: 900, color: TEXT, letterSpacing: "-1px", marginBottom: 6 }}>Join the waitlist</h3>
+          <p style={{ color: MUTED, fontSize: ".9rem", lineHeight: 1.65, marginBottom: 28 }}>
+            No strings attached. Reserve your spot and be first when Kaya launches.
+          </p>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              <input value={form.firstName} onChange={handle("firstName")} placeholder="First Name" style={pill("firstName")} />
+              <input value={form.lastName} onChange={handle("lastName")} placeholder="Last Name" style={pill("lastName")} />
             </div>
-
-            {/* Heading */}
-            <h3 style={{
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontSize: mob ? "2rem" : "2.4rem",
-              fontWeight: 900, color: TEXT,
-              letterSpacing: "-1px", marginBottom: 16,
-            }}>You're in!</h3>
-
-            {/* Body text */}
-            <p style={{ color: MUTED, lineHeight: 1.8, marginBottom: 12, fontSize: ".95rem", maxWidth: 420, margin: "0 auto 12px" }}>
-              Your spot on the Kaya waitlist is confirmed.
-              We've been building something fast, reliable and made for Ghana.
-              And now we're ready for you.
-            </p>
-            <p style={{ color: MUTED, lineHeight: 1.8, marginBottom: 28, fontSize: ".95rem", maxWidth: 420, margin: "0 auto 28px" }}>
-              We'll reach out to <strong style={{ color: TEXT }}>{form.firstName}</strong> at <strong style={{ color: TEXT }}>{form.email}</strong> the moment we launch in your city.
-            </p>
-
-            {/* CTA */}
-            <button onClick={onClose} style={{
-              background: DARK, color: WHITE, border: "none",
-              borderRadius: 999, padding: "14px 48px",
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontWeight: 800, fontSize: "1rem", cursor: "pointer",
-              marginBottom: 20,
-            }}>Close</button>
-
-            {/* Note */}
-            <p style={{ fontSize: ".78rem", color: "#aaa", lineHeight: 1.6 }}>
-              Check your inbox — your exclusive early access invite is on its way.
-            </p>
+            <input value={form.email} onChange={handle("email")} type="email" placeholder="Email" style={pill("email")} />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              <input value={form.city} onChange={handle("city")} placeholder="City" style={pill("city")} />
+              <select value={form.country} onChange={handle("country")} style={{ ...pill("country"), appearance: "none", WebkitAppearance: "none" }}>
+                <option value="" disabled>Country</option>
+                {Object.keys(DIAL_CODES).map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div style={{ display: "flex", gap: 10 }}>
+              {form.country && DIAL_CODES[form.country] && (
+                <div style={{ padding: "14px 18px", background: "#F2F2F2", borderRadius: 999, fontWeight: 700, fontSize: ".9rem", color: DARK, whiteSpace: "nowrap", flexShrink: 0 }}>{DIAL_CODES[form.country]}</div>
+              )}
+              <input value={form.phone} onChange={handle("phone")} type="tel" placeholder="Phone Number" style={{ ...pill("phone"), flex: 1 }} />
+            </div>
           </div>
-        ) : (
-          <>
-            {/* Header — centered like reference */}
-            <div style={{ textAlign: "center", marginBottom: 36 }}>
-              <h3 style={{
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                fontSize: mob ? "1.9rem" : "2.4rem",
-                fontWeight: 900, color: TEXT,
-                letterSpacing: "-1px", lineHeight: 1.1, marginBottom: 12,
-              }}>Join the waitlist</h3>
-              <p style={{ color: MUTED, fontSize: mob ? ".88rem" : ".95rem", lineHeight: 1.7, maxWidth: 440, margin: "0 auto" }}>
-                No strings attached. Simply reserve your spot and be first when Kaya launches in your city.
+
+          <button onClick={submit} disabled={loading} style={{
+            marginTop: 20, background: loading ? "#ccc" : DARK, color: WHITE,
+            border: "none", borderRadius: 999, padding: "15px", width: "100%",
+            fontWeight: 800, fontSize: "1rem", fontFamily: "'Plus Jakarta Sans',sans-serif",
+            cursor: loading ? "default" : "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+          }}>
+            {loading ? <><div style={{ width: 18, height: 18, border: "2.5px solid rgba(255,255,255,0.3)", borderTopColor: WHITE, borderRadius: "50%", animation: "spin .8s linear infinite" }} />Securing spot…</> : "Create account"}
+          </button>
+          <p style={{ textAlign: "center", fontSize: ".74rem", color: "#aaa", marginTop: 12 }}>
+            By submitting you agree to receive updates from Kaya. Unsubscribe anytime.
+          </p>
+        </>
+      )}
+    </>
+  );
+
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 99999, animation: "fadeIn .25s ease" }}>
+      {/* Close button — always visible top-right */}
+      <button onClick={onClose} style={{
+        position: "fixed", top: 20, right: 20, zIndex: 100000,
+        background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)",
+        border: "1px solid rgba(255,255,255,0.2)", color: WHITE,
+        borderRadius: "50%", width: 40, height: 40, cursor: "pointer",
+        fontSize: "1rem", display: "flex", alignItems: "center", justifyContent: "center",
+      }}>✕</button>
+
+      {mob ? (
+        // ── Mobile: full screen white ──────────────────────────────────
+        <div style={{
+          position: "absolute", inset: 0, background: WHITE,
+          overflowY: "auto", padding: "60px 24px 40px",
+          display: "flex", flexDirection: "column",
+        }}>
+          <img src="/kaya-logo.png" alt="Kaya" style={{ height: 32, objectFit: "contain", marginBottom: 28 }} />
+          {formContent}
+        </div>
+      ) : (
+        // ── Desktop: split screen ──────────────────────────────────────
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", height: "100vh" }}>
+
+          {/* Left — dark brand panel */}
+          <div style={{
+            background: DARK, padding: "60px 56px",
+            display: "flex", flexDirection: "column", justifyContent: "space-between",
+            position: "relative", overflow: "hidden",
+          }}>
+            {/* Grid lines */}
+            <div style={{
+              position: "absolute", inset: 0, opacity: 0.05,
+              backgroundImage: `repeating-linear-gradient(0deg,${WHITE} 0,${WHITE} 1px,transparent 1px,transparent 48px),repeating-linear-gradient(90deg,${WHITE} 0,${WHITE} 1px,transparent 1px,transparent 48px)`,
+            }} />
+
+            <div style={{ position: "relative", zIndex: 1 }}>
+              <img src="/kaya-logo.png" alt="Kaya" style={{ height: 36, objectFit: "contain", filter: "brightness(0) invert(1)", marginBottom: 48 }} />
+              <h2 style={{
+                fontFamily: "'Plus Jakarta Sans',sans-serif",
+                fontSize: "clamp(2.2rem,3.5vw,3.2rem)", fontWeight: 900,
+                color: WHITE, lineHeight: 1.1, letterSpacing: "-1.5px", marginBottom: 20,
+              }}>
+                Be first.<br />
+                <em style={{ fontStyle: "normal", color: GOLD }}>Be Kaya.</em>
+              </h2>
+              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "1rem", lineHeight: 1.8, maxWidth: 320 }}>
+                Ghana's everything-app is almost here. Food, groceries, pharmacy and retail — one tap away.
               </p>
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-
-              {/* Row 1: First + Last name */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                <input value={form.firstName} onChange={handle("firstName")} placeholder="First Name" style={pill("firstName")} />
-                <input value={form.lastName} onChange={handle("lastName")} placeholder="Last Name" style={pill("lastName")} />
-              </div>
-
-              {/* Email */}
-              <input value={form.email} onChange={handle("email")} type="email" placeholder="Email" style={pill("email")} />
-
-              {/* City + Country */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                <input value={form.city} onChange={handle("city")} placeholder="City" style={pill("city")} />
-                <select value={form.country} onChange={handle("country")}
-                  style={{ ...pill("country"), appearance: "none", WebkitAppearance: "none" }}>
-                  <option value="" disabled>Country</option>
-                  {Object.keys(DIAL_CODES).map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </div>
-
-              {/* Phone */}
-              <div style={{ display: "flex", gap: 10 }}>
-                {form.country && DIAL_CODES[form.country] && (
-                  <div style={{
-                    padding: "14px 18px", background: "#F2F2F2",
-                    borderRadius: 999, fontWeight: 700, fontSize: ".9rem",
-                    color: DARK, whiteSpace: "nowrap", flexShrink: 0,
-                  }}>{DIAL_CODES[form.country]}</div>
-                )}
-                <input value={form.phone} onChange={handle("phone")} type="tel" placeholder="Phone Number" style={{ ...pill("phone"), flex: 1 }} />
-              </div>
-
-            </div>
-
-            {/* Submit */}
-            <div style={{ marginTop: 20 }}>
-              <button onClick={submit} disabled={loading} style={{
-                background: loading ? "#ccc" : DARK, color: WHITE,
-                border: "none", borderRadius: 999, padding: "15px",
-                fontWeight: 800, fontSize: "1rem", width: "100%",
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                cursor: loading ? "default" : "pointer",
-                display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+            <div style={{ position: "relative", zIndex: 1 }}>
+              {/* Floating delivery card */}
+              <div style={{
+                background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: 18, padding: "18px 22px", marginBottom: 24,
+                display: "flex", alignItems: "center", gap: 16, maxWidth: 300,
               }}>
-                {loading
-                  ? <><div style={{ width: 18, height: 18, border: "2.5px solid rgba(255,255,255,0.3)", borderTopColor: WHITE, borderRadius: "50%", animation: "spin .8s linear infinite" }} /> Securing spot…</>
-                  : "Create account"}
-              </button>
+                <div style={{ width: 48, height: 48, borderRadius: "50%", background: GOLD, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.3rem", flexShrink: 0 }}>📡</div>
+                <div>
+                  <div style={{ fontSize: ".7rem", color: "rgba(255,255,255,0.4)", fontWeight: 700, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 4 }}>Delivering in</div>
+                  <div style={{ fontSize: "1.1rem", color: WHITE, fontWeight: 900 }}>Under 30 min</div>
+                </div>
+              </div>
+              {/* Trust chips */}
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {["🔒 Secure", "🇬🇭 Ghana-built", "⚡ Mobile money"].map(t => (
+                  <span key={t} style={{
+                    background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 999, padding: "5px 13px",
+                    fontSize: ".75rem", color: "rgba(255,255,255,0.5)", fontWeight: 600,
+                  }}>{t}</span>
+                ))}
+              </div>
             </div>
+          </div>
 
-            <p style={{ textAlign: "center", fontSize: ".76rem", color: "#aaa", lineHeight: 1.65, marginTop: 14 }}>
-              By submitting you agree to receive updates from Kaya. You may unsubscribe at any time.
-            </p>
-          </>
-        )}
-      </div>
+          {/* Right — form panel */}
+          <div style={{
+            background: WHITE, overflowY: "auto",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "60px 64px",
+          }}>
+            <div style={{ width: "100%", maxWidth: 400 }}>
+              {formContent}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
